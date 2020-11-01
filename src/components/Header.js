@@ -13,11 +13,16 @@ export default function Header() {
   };
 
   return (
-    <Navbar bg="" className="w-100" expand="md" style={{ minWidth: "300px" }}>
+    <Navbar
+      bg="light"
+      className="w-100 mb-2"
+      expand="xs"
+      style={{ minWidth: "300px" }}
+    >
       <Navbar.Brand href="/">WoW Guild Manager</Navbar.Brand>
       <Navbar.Toggle aria-controls="main-menu" />
       <Navbar.Collapse
-        className="d-flex justify-content-between align-items-end"
+        className="justify-content-between align-items-center"
         id="main-menu"
       >
         <Nav>

@@ -7,6 +7,7 @@ import Login from "./Login";
 import PasswordReset from "./PasswordReset";
 import PrivateRoute from "./PrivateRoute";
 import Signup from "./Signup";
+import TestsCompo from "./TestsCompo";
 
 function App() {
   return (
@@ -23,6 +24,7 @@ function App() {
               <Route path="/signup" component={Signup} />
               <Route path="/login" component={Login} />
               <Route path="/forgot-password" component={PasswordReset} />
+              <Route path="/tests" component={TestsCompo} />
             </Switch>
           </div>
         </Container>
