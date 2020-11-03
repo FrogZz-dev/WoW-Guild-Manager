@@ -1,0 +1,51 @@
+.character {
+  font-weight: bold;
+}
+
+.chevalier-de-la-mort {
+  color: #c41f3b;
+}
+
+.chasseur-de-démons {
+  color: #a330c9;
+}
+
+.druide {
+  color: #ff7d0a;
+}
+
+.chasseur {
+  color: #abd473;
+}
+
+.mage {
+  color: #69ccf0;
+}
+
+.moine {
+  color: #00ff96;
+}
+
+.paladin {
+  color: #f58cba;
+}
+
+.prêtre {
+  color: #aaaaaa;
+}
+
+.voleur {
+  color: #fff569;
+}
+
+.chaman {
+  color: #0070de;
+}
+
+.démoniste {
+  color: #9482c9;
+}
+
+.guerrier {
+  color: #c79c6e;
+}

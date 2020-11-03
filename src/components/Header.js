@@ -14,9 +14,9 @@ export default function Header() {
 
   return (
     <Navbar
-      bg="light"
+      bg="dark"
       className="w-100 mb-2"
-      expand="xs"
+      expand="sm"
       style={{ minWidth: "300px" }}
     >
       <Navbar.Brand href="/">WoW Guild Manager</Navbar.Brand>

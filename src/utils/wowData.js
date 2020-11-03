@@ -1,6 +1,6 @@
 const apiKey = process.env.REACT_APP_BLIZZARD_API_CLIENT_ID;
 const apiSecret = process.env.REACT_APP_BLIZZARD_API_CLIENT_SECRET;
-const redirectUri = process.env.REACT_APP_BLIZZARD_API_REDIRECT_URI;
+// const redirectUri = process.env.REACT_APP_BLIZZARD_API_REDIRECT_URI;
 let clientAccessToken = "";
 
 const wowData = {
@@ -63,27 +63,39 @@ const wowData = {
     throw new Error("Erreur lors de la récupération du token");
   },
 
-  async getRealmList(region) {
-    const fetchUri = `https://${region}.api.blizzard.com/data/wow/realm/index?namespace=dynamic-${region}&access_token=${clientAccessToken}`;
-
-    const response = await fetch(fetchUri);
-    if (response.ok) {
-      const resJson = await response.json();
-      return resJson.realms;
-    }
-    throw new Error("Erreur lors de la récupération des serveurs?");
+  // renvoi le nom au format adapté pour l'url: en minuscules, les espaces remplacés par des -
+  validateName(inputText) {
+    return inputText.toLowerCase().split(" ").join("-");
   },
 
-  async getGuildInfo(region, realm, guildName) {
-    const fetchUri = `https://${region}.api.blizzard.com/data/wow/guild/${realm}/${guildName}?namespace=profile-${region}&access_token=${clientAccessToken}`;
+  async getGuildRoster(region, realm, guildName) {
+    const validGuildName = this.validateName(guildName);
+    const fetchUri = `https://${region}.api.blizzard.com/data/wow/guild/${realm}/${validGuildName}/roster?namespace=profile-${region}&access_token=${clientAccessToken}`;
 
     const response = await fetch(fetchUri);
 
     if (response.ok) {
       const resJson = await response.json();
-      console.log(resJson); // return resJson.realms;
+
+      return resJson.members;
     } else {
-      throw new Error("Guilde introuvable, vérifiez son nom");
+      throw new Error(
+        "Une erreur s'est produite lors de la récupération des membres"
+      );
+    }
+  },
+
+  async getCharacterInfo(region, realm, characterName) {
+    const validCharacterName = this.validateName(characterName);
+    const fetchUri = `https://${region}.api.blizzard.com/profile/wow/character/${realm}/${validCharacterName}?namespace=profile-${region}&access_token=${clientAccessToken}`;
+
+    const response = await fetch(fetchUri);
+    if (response.ok) {
+      const resJson = await response.json();
+      console.log(resJson);
+      return resJson;
+    } else {
+      throw new Error(`${characterName} introuvable`);
     }
   },
 };
