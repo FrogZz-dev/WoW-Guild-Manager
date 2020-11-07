@@ -1,12 +1,9 @@
 import React, { useState } from "react";
 import { Alert } from "react-bootstrap";
-import { useRoster } from "../contexts/RosterContext";
-import wowData from "../utils/wowData";
-import Character from "./Character";
+import Management from "./Management";
 
 export default function TestsCompo() {
   const [error, setError] = useState("");
-  const { roster } = useRoster();
 
   /*const handleRegionChange = (e) => {
     setRegion(e.target.value);
@@ -45,17 +42,7 @@ export default function TestsCompo() {
   return (
     <>
       {error && <Alert variant="danger">{error}</Alert>}
-      <div className="w-100 overflow-auto border">
-        <ul>
-          {roster.map((character) => {
-            return (
-              <li>
-                <Character characterInfo={character} />
-              </li>
-            );
-          })}
-        </ul>
-      </div>
+      <Management />
     </>
   );
 }

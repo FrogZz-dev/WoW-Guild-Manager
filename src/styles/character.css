@@ -1,5 +1,6 @@
 .character {
   font-weight: bold;
+  cursor: pointer;
 }
 
 .chevalier-de-la-mort {
@@ -31,7 +32,7 @@
 }
 
 .prêtre {
-  color: #aaaaaa;
+  color: #ffffff;
 }
 
 .voleur {

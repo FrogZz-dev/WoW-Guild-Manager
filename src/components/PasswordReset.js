@@ -31,7 +31,7 @@ export default function PasswordReset() {
   };
 
   return (
-    <>
+    <div className="w-100" style={{ maxWidth: "400px" }}>
       <Card>
         <Card.Body>
           <h2 className="text-center mb-4">Réinitialiser le mot de passe</h2>
@@ -57,6 +57,6 @@ export default function PasswordReset() {
           </div>
         </Card.Body>
       </Card>
-    </>
+    </div>
   );
 }

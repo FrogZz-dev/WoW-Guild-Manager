@@ -14,7 +14,7 @@ export default function Header() {
 
   return (
     <Navbar
-      bg="dark"
+      variant="dark"
       className="w-100 mb-2"
       expand="sm"
       style={{ minWidth: "300px" }}
@@ -28,6 +28,12 @@ export default function Header() {
         <Nav>
           <NavLink className="nav-link" exact to="/">
             Accueil
+          </NavLink>
+          <NavLink className="nav-link" to="/tests">
+            Tests
+          </NavLink>
+          <NavLink className="nav-link" to="/management">
+            Gestion des membres
           </NavLink>
         </Nav>
 

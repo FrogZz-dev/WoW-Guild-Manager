@@ -1,31 +1,24 @@
 import React from "react";
-import { OverlayTrigger, Popover } from "react-bootstrap";
 import "../styles/character.css";
 import wowData from "../utils/wowData";
 
-export default function Character({ characterInfo }) {
-  const { id, name, level, rank, className, spec, iLvl } = characterInfo;
+export default function Character({
+  characterInfo,
+  infoToDisplay,
+  onCharacterClick,
+}) {
+  const { id, name, className } = characterInfo;
   return (
-    <OverlayTrigger
-      trigger="click"
+    <p
       key={id}
-      placement="right"
-      overlay={
-        <Popover>
-          <Popover.Title>{name}</Popover.Title>
-          <Popover.Content>
-            <div>
-              <p>
-                {className} {spec}
-              </p>
-              <p>Niveau {level}</p>
-              <p>{iLvl} iLvl</p>
-            </div>
-          </Popover.Content>
-        </Popover>
+      className={
+        "cursor-pointer m-0 d-flex justify-content-between character " +
+        wowData.validateName(className)
       }
+      onClick={() => onCharacterClick(characterInfo)}
     >
-      <p className={"character " + wowData.validateName(className)}>{name}</p>
-    </OverlayTrigger>
+      <span>{name}</span>
+      <span>{characterInfo[infoToDisplay]}</span>
+    </p>
   );
 }
