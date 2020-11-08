@@ -1,15 +1,21 @@
 import React, { useEffect, useState } from "react";
-import { Card } from "react-bootstrap";
+import { Col } from "react-bootstrap";
+import Switch from "react-bootstrap/esm/Switch";
+import { Redirect, Route, useLocation } from "react-router-dom";
 import { useRoster } from "../contexts/RosterContext";
 import CharactersDisplay from "./CharactersDisplay";
+import CharacterSheet from "./CharacterSheet";
 import Filters from "./Filters";
+import GroupCreation from "./GroupCreation";
 
 export default function ManagementHandles() {
   const [displayedCharacters, setDisplayedCharacters] = useState([]);
+  const [isInit, setIsInit] = useState(false);
   const [searchInput, setSearchInput] = useState("");
   const [order, setOrder] = useState("");
   const [selectedCharacters, setSelectedCharacters] = useState([]);
 
+  const location = useLocation();
   const { isLoadingRoster, roster } = useRoster();
 
   const sortMethod = (a, b) => {
@@ -30,24 +36,30 @@ export default function ManagementHandles() {
   // initialisation de la liste à afficher une fois les données complétement chargées
   useEffect(() => {
     setDisplayedCharacters(roster);
+
+    setIsInit(true);
   }, [isLoadingRoster]);
 
   // mis à jour de la liste des personnages à chaque changement de la recherche
   useEffect(() => {
-    if (searchInput) {
-      const regex = new RegExp(searchInput, "i");
-      setDisplayedCharacters(
-        roster.filter((character) => character.name.search(regex) > -1)
-      );
-    } else setDisplayedCharacters(roster);
+    if (isInit) {
+      if (searchInput) {
+        const regex = new RegExp(searchInput, "i");
+        setDisplayedCharacters(
+          roster.filter((character) => character.name.search(regex) > -1)
+        );
+      } else setDisplayedCharacters(roster);
+    }
     return () => {};
   }, [searchInput]);
 
   useEffect(() => {
-    const tempCharacters = [...displayedCharacters];
-    tempCharacters.sort((a, b) => a.name.localeCompare(b.name));
-    tempCharacters.sort(sortMethod);
-    setDisplayedCharacters(tempCharacters);
+    if (isInit) {
+      const tempCharacters = [...displayedCharacters];
+      tempCharacters.sort((a, b) => a.name.localeCompare(b.name));
+      tempCharacters.sort(sortMethod);
+      setDisplayedCharacters(tempCharacters);
+    }
     return () => {};
   }, [order]);
 
@@ -60,11 +72,15 @@ export default function ManagementHandles() {
   };
 
   const handleCharacterClick = (character) => {
-    if (!selectedCharacters.some((selected) => character.id === selected.id))
-      setSelectedCharacters((selectedCharacters) => [
-        ...selectedCharacters,
-        character,
-      ]);
+    if (location.pathname === "/management/browse") {
+      setSelectedCharacters([character]);
+    } else {
+      if (!selectedCharacters.some((selected) => character.id === selected.id))
+        setSelectedCharacters((selectedCharacters) => [
+          ...selectedCharacters,
+          character,
+        ]);
+    }
   };
 
   const handleSelectedClick = (character) => {
@@ -78,29 +94,39 @@ export default function ManagementHandles() {
   };
 
   return (
-    <div
-      className="w-100 d-flex justify-content-between align-items-auto p-25"
-      style={{ height: "83vh" }}
-    >
-      <div className="w-25">
+    <>
+      <Col md={3}>
         <Filters onInput={handleSearch} onOrder={handleOrderChange} />
+
         <CharactersDisplay
           className="ml-50"
           characters={displayedCharacters}
           infoToDisplay={order}
           onCharacterClick={handleCharacterClick}
         />
-      </div>
-      <div className="d-flex align-items-center justify-content-center w-100 min-vh-80 ">
-        <Card className="text-white bg-secondary">
-          <Card.Body>
-            <CharactersDisplay
+      </Col>
+      <Col>
+        <Switch>
+          <Route exact path="/management">
+            <Redirect to="/management/browse" />
+          </Route>
+          <Route path="/management/browse">
+            {roster[0] && (
+              <CharacterSheet
+                characterInfo={
+                  selectedCharacters[0] ? selectedCharacters[0] : roster[0]
+                }
+              />
+            )}
+          </Route>
+          <Route path="/management/groups">
+            <GroupCreation
               characters={selectedCharacters}
               onCharacterClick={handleSelectedClick}
             />
-          </Card.Body>
-        </Card>
-      </div>
-    </div>
+          </Route>
+        </Switch>
+      </Col>
+    </>
   );
 }

@@ -1,4 +1,5 @@
 import React from "react";
+import { Col, Row } from "react-bootstrap";
 import Character from "./Character";
 
 export default function CharactersDisplay({
@@ -7,17 +8,16 @@ export default function CharactersDisplay({
   onCharacterClick,
 }) {
   return (
-    <div
-      className="overflow-auto h-auto"
-      style={{ margin: "auto", minWidth: "160px" }}
-    >
-      {characters.map((character) => (
-        <Character
-          characterInfo={character}
-          infoToDisplay={infoToDisplay}
-          onCharacterClick={onCharacterClick}
-        />
-      ))}
-    </div>
+    <Row style={{ height: "65vh" }}>
+      <Col className="overflow-auto mh-100">
+        {characters.map((character) => (
+          <Character
+            characterInfo={character}
+            infoToDisplay={infoToDisplay}
+            onCharacterClick={onCharacterClick}
+          />
+        ))}
+      </Col>
+    </Row>
   );
 }

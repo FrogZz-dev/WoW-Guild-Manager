@@ -15,10 +15,10 @@ function App() {
   return (
     <Router>
       <AuthProvider>
-        <div id="app" className="bg-dark" style={{ minHeight: "100vh" }}>
+        <div id="app" className="bg-dark min-vh-100">
           <Header />
-          <Container className="border border-light">
-            <Row className="justify-content-center">
+          <Container style={{ minHeight: "85vh" }}>
+            <Row className="justify-content-center align-items-center">
               <RosterProvider>
                 <Switch>
                   <PrivateRoute exact path="/" component={Dashboard} />
