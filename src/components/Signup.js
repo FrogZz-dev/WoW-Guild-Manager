@@ -29,7 +29,7 @@ export default function Signup() {
   };
 
   return (
-    <>
+    <div className="w-100" style={{ maxWidth: "400px" }}>
       <Card>
         <Card.Body>
           <h2 className="text-center mb-4">Créer un compte</h2>
@@ -85,6 +85,6 @@ export default function Signup() {
       <div className="w-100 text-center">
         Vous avez déjà un compte ? <Link to="/login">Se connecter</Link>
       </div>
-    </>
+    </div>
   );
 }

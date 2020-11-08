@@ -1,7 +1,8 @@
 import React from "react";
-import { Nav, Navbar } from "react-bootstrap";
+import { Dropdown, Nav, Navbar, NavDropdown, NavItem } from "react-bootstrap";
 import { NavLink } from "react-router-dom";
 import { useAuth } from "../contexts/AuthContext";
+import "../styles/style.css";
 
 export default function Header() {
   const { currentUser, logout } = useAuth();
@@ -14,7 +15,7 @@ export default function Header() {
 
   return (
     <Navbar
-      bg="dark"
+      variant="dark"
       className="w-100 mb-2"
       expand="sm"
       style={{ minWidth: "300px" }}
@@ -29,6 +30,19 @@ export default function Header() {
           <NavLink className="nav-link" exact to="/">
             Accueil
           </NavLink>
+          <Dropdown as={NavItem}>
+            <Dropdown.Toggle as={NavItem} className="nav-link">
+              Gestion
+            </Dropdown.Toggle>
+            <Dropdown.Menu className="bg-dark text-light">
+              <Dropdown.Item as={NavLink} to="/management/browse">
+                Parcourir
+              </Dropdown.Item>
+              <Dropdown.Item as={NavLink} to="/management/groups">
+                Groupes
+              </Dropdown.Item>
+            </Dropdown.Menu>
+          </Dropdown>
         </Nav>
 
         {!currentUser && (

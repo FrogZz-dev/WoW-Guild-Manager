@@ -14,12 +14,12 @@ export const useRoster = () => {
 export default function RosterProvider({ children }) {
   const [roster, setRoster] = useState([]);
   const [isLoadingRoster, setIsLoadingRoster] = useState(true);
-  const [errorList, setErrorList] = useState([]);
+  const [errorList, setErrorList] = useState([""]);
   const values = { roster, isLoadingRoster };
 
   // charcgement des infos complètes du roster
   useEffect(() => {
-    const loadRoster = async () => {
+    async function loadRoster() {
       // création du token d'accès
       await wowData.setToken();
 
@@ -30,36 +30,49 @@ export default function RosterProvider({ children }) {
         guildName
       );
 
-      await rawRosterData.map(async (rawCharacter) => {
-        try {
-          // récupération des infos d'un personnage
-          const memberData = await wowData.getCharacterInfo(
-            region,
-            realm,
-            rawCharacter.character.name
-          );
+      const newRoster = [];
+      // Promise.all pour attendre la fin du map
+      Promise.all(
+        rawRosterData.map(async (rawCharacter) => {
+          try {
+            // récupération des infos d'un personnage
+            const memberData = await wowData.getCharacterInfo(
+              region,
+              realm,
+              rawCharacter.character.name
+            );
 
-          // création de la fiche du personnage
-          const memberInfo = {
-            id: rawCharacter.character.id,
-            name: rawCharacter.character.name,
-            rank: rawCharacter.rank,
-            level: rawCharacter.character.level,
-            iLvl: memberData.average_item_level,
-            className: memberData.character_class.name.fr_FR,
-            spec: memberData.active_spec.name.fr_FR,
-          };
+            // création de la fiche du personnage
+            const memberInfo = {
+              id: rawCharacter.character.id,
+              name: rawCharacter.character.name,
+              rank: rawCharacter.rank,
+              level: rawCharacter.character.level,
+              iLvl: memberData.average_item_level,
+              className: memberData.character_class.name,
+              spec: memberData.active_spec.name,
+            };
 
-          // ajout du personnage à la liste
-          setRoster((roster) => [...roster, memberInfo]);
-        } catch {
-          setErrorList((errorList) => [
-            ...errorList,
-            rawCharacter.character.name,
-          ]);
-        }
+            // ajout du personnage à la liste
+            newRoster.push(memberInfo);
+
+            if (roster.length === rawRosterData.length - errorList.length) {
+              setIsLoadingRoster(false);
+            }
+          } catch {
+            setErrorList((errorList) => [
+              ...errorList,
+              rawCharacter.character.name,
+            ]);
+          }
+        })
+      ).then(() => {
+        newRoster.sort((a, b) => a.name.localeCompare(b.name));
+        setRoster(newRoster);
+        setIsLoadingRoster(false);
       });
-    };
+    }
+
     loadRoster();
   }, []);
   return (

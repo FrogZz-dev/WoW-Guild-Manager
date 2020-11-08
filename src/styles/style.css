@@ -1,0 +1,17 @@
+.dropdown-item.active,
+.dropdown-item.active:hover,
+.dropdown-item:active {
+  background-color: #6c757d !important;
+  color: #fff !important;
+}
+
+.dropdown-item:hover {
+  color: ;
+}
+
+.dropdown-item {
+  color: rgba(255, 255, 255, 0.75) !important;
+}
+.dropdown-item:hover {
+  color: #6c757d !important;
+}

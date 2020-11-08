@@ -36,7 +36,7 @@ export default function Login() {
   };
 
   return (
-    <>
+    <div className="w-100" style={{ maxWidth: "400px" }}>
       <Card>
         <Card.Body>
           <h2 className="text-center mb-4">Se connecter</h2>
@@ -81,6 +81,6 @@ export default function Login() {
       <div className="w-100 text-center">
         Pas encore de compte ? <Link to="/signup">Créer un compte</Link>
       </div>
-    </>
+    </div>
   );
 }

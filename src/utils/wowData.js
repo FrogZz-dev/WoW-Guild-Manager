@@ -87,12 +87,12 @@ const wowData = {
 
   async getCharacterInfo(region, realm, characterName) {
     const validCharacterName = this.validateName(characterName);
-    const fetchUri = `https://${region}.api.blizzard.com/profile/wow/character/${realm}/${validCharacterName}?namespace=profile-${region}&access_token=${clientAccessToken}`;
+    const fetchUri = `https://${region}.api.blizzard.com/profile/wow/character/${realm}/${validCharacterName}?namespace=profile-${region}&locale=fr_Fr&access_token=${clientAccessToken}`;
 
     const response = await fetch(fetchUri);
     if (response.ok) {
       const resJson = await response.json();
-      console.log(resJson);
+
       return resJson;
     } else {
       throw new Error(`${characterName} introuvable`);

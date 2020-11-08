@@ -1,10 +1,11 @@
-import { Container } from "react-bootstrap";
+import { Container, Row } from "react-bootstrap";
 import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
 import { AuthProvider } from "../contexts/AuthContext";
 import RosterProvider from "../contexts/RosterContext";
 import Dashboard from "./Dashboard";
 import Header from "./Header";
 import Login from "./Login";
+import Management from "./Management";
 import PasswordReset from "./PasswordReset";
 import PrivateRoute from "./PrivateRoute";
 import Signup from "./Signup";
@@ -14,23 +15,21 @@ function App() {
   return (
     <Router>
       <AuthProvider>
-        <div id="app" className="bg-dark">
+        <div id="app" className="bg-dark min-vh-100">
           <Header />
-          <Container
-            className="d-flex align-items-center justify-content-center"
-            style={{ minHeight: "100vh" }}
-          >
-            <RosterProvider>
-              <div className="w-100" style={{ maxWidth: "400px" }}>
+          <Container style={{ minHeight: "85vh" }}>
+            <Row className="justify-content-center align-items-center">
+              <RosterProvider>
                 <Switch>
                   <PrivateRoute exact path="/" component={Dashboard} />
                   <Route path="/signup" component={Signup} />
                   <Route path="/login" component={Login} />
                   <Route path="/forgot-password" component={PasswordReset} />
                   <Route path="/tests" component={TestsCompo} />
+                  <Route path="/management" component={Management} />
                 </Switch>
-              </div>
-            </RosterProvider>
+              </RosterProvider>
+            </Row>
           </Container>
         </div>
       </AuthProvider>
