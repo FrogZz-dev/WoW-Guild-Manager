@@ -1,8 +1,8 @@
 import React from "react";
-import { Dropdown, Nav, Navbar, NavDropdown, NavItem } from "react-bootstrap";
+import { Dropdown, Nav, Navbar, NavItem } from "react-bootstrap";
 import { NavLink } from "react-router-dom";
-import { useAuth } from "../contexts/AuthContext";
-import "../styles/style.css";
+import { useAuth } from "@contexts/AuthContext";
+import "@styles/style.css";
 
 export default function Header() {
   const { currentUser, logout } = useAuth();
