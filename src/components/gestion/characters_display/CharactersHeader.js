@@ -9,7 +9,7 @@ export default function CharactersHeader() {
     <thead>
       <tr>
         {availableInfo.map((info) => (
-          <HeaderCell info={info} />
+          <HeaderCell key={info.key} info={info} />
         ))}
       </tr>
     </thead>

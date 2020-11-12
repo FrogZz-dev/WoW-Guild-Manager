@@ -2,10 +2,19 @@ import React from "react";
 import wowData from "@utils/wowData";
 import "@styles/character.css";
 
-export default function CharacterRow({ characterData }) {
-  const { name, className, spec, level, iLvl, rank } = characterData;
+export default function CharacterRow({ characterData, onCharacterClick }) {
+  const { id, name, className, spec, level, iLvl, rank } = characterData;
+
+  const handleCharacterSelection = () => {
+    onCharacterClick(characterData);
+  };
+
   return (
-    <tr className={"character " + wowData.validateName(className)}>
+    <tr
+      className={"character " + wowData.validateName(className)}
+      onClick={handleCharacterSelection}
+      id={id}
+    >
       <td>{name}</td>
       <td>{className}</td>
       <td>{spec}</td>

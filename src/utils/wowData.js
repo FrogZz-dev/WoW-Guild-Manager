@@ -27,7 +27,7 @@ const wowData = {
     { id: 0, name: "GM" },
     { id: 1, name: "Co-GM" },
     { id: 2, name: "RL Master" },
-    { id: 6, name: "Raider" },
+    { id: 6, name: "Raideur" },
     { id: 7, name: "Membre" },
     { id: 3, name: "C'est quoi ça?" },
     { id: 4, name: "Hmmm?" },
@@ -113,7 +113,7 @@ const wowData = {
 
       return resJson;
     } else {
-      throw new Error(`${characterName} introuvable`);
+      console.error(`${characterName} introuvable`);
     }
   },
 

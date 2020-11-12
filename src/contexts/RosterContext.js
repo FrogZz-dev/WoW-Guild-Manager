@@ -1,5 +1,7 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import React, { createContext, useContext, useEffect, useState } from "react";
 import wowData from "@utils/wowData";
+import { fireFunctions } from "@utils/firebase";
 
 const region = process.env.REACT_APP_BLIZZARD_REGION;
 const realm = process.env.REACT_APP_BLIZZARD_REALM;
@@ -27,19 +29,24 @@ export default function RosterProvider({ children }) {
   // gestion du tri
   const [sorting, setSorting] = useState("name");
   const [descending, setDescending] = useState(true);
+  let sortType; // le typeof des données à trier pour determiner la méthode à utiliser
 
   const [isLoadingRoster, setIsLoadingRoster] = useState(true);
   const [errorList, setErrorList] = useState([""]);
 
   // infos contenues dans chaque personnage
   const availableInfo = [
-    { tag: "name", displayName: "Nom", type: "string" },
-    { tag: "className", displayName: "Classe", type: "string" },
-    { tag: "spec", displayName: "Spécialisation", type: "string" },
-    { tag: "level", displayName: "Niveau", type: "number" },
-    { tag: "iLvl", displayName: "iLvl", type: "number" },
-    { tag: "rank", displayName: "Rang", type: "string" },
+    { key: "name", displayName: "Nom", type: "string" },
+    { key: "className", displayName: "Classe", type: "string" },
+    { key: "spec", displayName: "Spécialisation", type: "string" },
+    { key: "level", displayName: "Niveau", type: "number" },
+    { key: "iLvl", displayName: "iLvl", type: "number" },
+    { key: "rank", displayName: "Rang", type: "string" },
   ];
+
+  /**
+   *  Gestion des filtres et du tri
+   */
 
   // application des filtres
   const filterCharacters = ({ nameFilter, selectedClass, selectedRank }) => {
@@ -67,6 +74,7 @@ export default function RosterProvider({ children }) {
     setDisplayedCharacters(tempDisplay);
   };
 
+  // mise à jour des states de tri
   const sortingChange = (sortingCategory) => {
     if (sortingCategory === sorting) {
       setDescending((descending) => !descending);
@@ -76,13 +84,14 @@ export default function RosterProvider({ children }) {
     }
   };
 
+  // retourne le type de données à trier
   const getSortType = () => {
-    return availableInfo.find((info) => info.tag === sorting).type;
+    sortType = availableInfo.find((info) => info.key === sorting).type;
   };
 
   const sortCallback = (item1, item2) => {
     // methode de tri des nombres
-    if (getSortType() === "number") {
+    if (sortType === "number") {
       if (descending) {
         return item2[sorting] - item1[sorting];
       }
@@ -108,9 +117,8 @@ export default function RosterProvider({ children }) {
 
   // application du changement d'ordre
   useEffect(() => {
-    console.log(
-      `Sorting by ${sorting}, ${descending ? "descending" : "ascending"}`
-    );
+    getSortType();
+
     setDisplayedCharacters((displayedCharacters) =>
       sortCharacters(displayedCharacters)
     );
@@ -120,8 +128,13 @@ export default function RosterProvider({ children }) {
     );
   }, [sorting, descending]);
 
+  /**
+   * Initialisation des données du roster
+   */
+
   // chargement des infos complètes du roster
   async function loadRoster() {
+    setIsLoadingRoster(true);
     // récupération de la liste des membres
     const rawRosterData = await wowData.getGuildRoster(
       region,
@@ -135,12 +148,20 @@ export default function RosterProvider({ children }) {
       rawRosterData.map(async (rawCharacter) => {
         try {
           // récupération des infos d'un personnage
-          const memberData = await wowData.getCharacterInfo(
+          const [memberData, { data }] = await Promise.all([
+            wowData.getCharacterInfo(
+              region,
+              realm,
+              rawCharacter.character.name
+            ),
+            fireFunctions.getMemberAltsById(rawCharacter.character.id),
+          ]);
+          /* const memberData = await wowData.getCharacterInfo(
             region,
             realm,
             rawCharacter.character.name
           );
-
+          const { data } = fireFunctions.getMemberAltsById(memberData); */
           // création de la fiche du personnage
           const memberInfo = {
             id: rawCharacter.character.id,
@@ -150,6 +171,7 @@ export default function RosterProvider({ children }) {
             iLvl: memberData.average_item_level,
             className: memberData.character_class.name,
             spec: memberData.active_spec.name,
+            alts: data ? data.characters : [],
           };
 
           // ajout du personnage à la liste
@@ -194,17 +216,34 @@ export default function RosterProvider({ children }) {
 
   // initialisation des states d'affichage
   useEffect(() => {
-    setDisplayedCharacters(roster);
-    setDisplayableCharacters(roster);
+    if (!isLoadingRoster) {
+      setDisplayedCharacters(roster);
+      setDisplayableCharacters(roster);
+    }
   }, [isLoadingRoster]);
+
+  /**
+   * fonctions utilitaires
+   */
+  const getCharacterById = (id) => {
+    return roster.find((character) => character.id === id);
+  };
+
+  /**
+   * valeurs partagées du context
+   */
 
   const values = {
     displayedCharacters,
+    loadRoster,
     isLoadingRoster,
     filterCharacters,
     classes,
     availableInfo,
     sortingChange,
+    sorting,
+    descending,
+    getCharacterById,
   };
 
   return (

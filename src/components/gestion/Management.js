@@ -1,27 +1,18 @@
-import React from "react";
-import Switch from "react-bootstrap/esm/Switch";
-import { Redirect, Route } from "react-router-dom";
-import RosterProvider from "../../contexts/RosterContext";
-import CharacterCard from "./CharacterCard";
+import React, { useState } from "react";
+import RosterProvider from "@contexts/RosterContext";
 import CharactersDisplay from "./characters_display/CharactersDisplay";
-import GroupEditor from "./GroupEditor";
+import ManagementRoutes from "@components/routes/ManagementRoutes";
 
 export default function Management() {
+  const [lastClicked, setLastClicked] = useState({});
+
   return (
     <RosterProvider>
-      <Switch>
-        <Route exact path="/management">
-          <Redirect to="/management/browser" />
-        </Route>
-        <Route path="/management/browser">
-          <CharacterCard />
-        </Route>
-        <Route path="/management/groups">
-          <GroupEditor />
-        </Route>
-      </Switch>
-
-      <CharactersDisplay />
+      <ManagementRoutes
+        lastClicked={lastClicked}
+        onCharacterClick={setLastClicked}
+      />
+      <CharactersDisplay onCharacterClick={setLastClicked} />
     </RosterProvider>
   );
 }
