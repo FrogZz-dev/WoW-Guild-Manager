@@ -32,7 +32,7 @@ export default function PasswordReset() {
 
   return (
     <div className="w-100" style={{ maxWidth: "400px" }}>
-      <Card>
+      <Card bg="dark" text="white" border="warning">
         <Card.Body>
           <h2 className="text-center mb-4">Réinitialiser le mot de passe</h2>
           {error && <Alert variant="danger">{error}</Alert>}
@@ -48,12 +48,19 @@ export default function PasswordReset() {
               />
             </Form.Group>
 
-            <Button disabled={loading} type="submit" className="w-100 mt-3">
+            <Button
+              variant="warning"
+              disabled={loading}
+              type="submit"
+              className="w-100 mt-3"
+            >
               Réinitialiser
             </Button>
           </Form>
           <div className="w-100 text-center mt-2">
-            <Link to="/login">Annuler</Link>
+            <Link to="/login" className="text-warning">
+              Annuler
+            </Link>
           </div>
         </Card.Body>
       </Card>

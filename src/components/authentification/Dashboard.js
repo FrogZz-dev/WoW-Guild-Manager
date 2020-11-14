@@ -21,7 +21,7 @@ export default function Dashboard() {
 
   return (
     <>
-      <Card>
+      <Card bg="dark" text="white" border="warning">
         <Card.Body>
           <h2 className="text-center mb-4">Profil</h2>
           {error && <Alert variant="danger">{error}</Alert>}
@@ -29,7 +29,7 @@ export default function Dashboard() {
         </Card.Body>
       </Card>
       <div className="w-100 text-center">
-        <Button variant="link" onClick={handleLogout}>
+        <Button variant="link" className="text-warning" onClick={handleLogout}>
           Déconnexion
         </Button>
       </div>

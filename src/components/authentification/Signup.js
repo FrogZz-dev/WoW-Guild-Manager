@@ -30,7 +30,7 @@ export default function Signup() {
 
   return (
     <div className="w-100" style={{ maxWidth: "400px" }}>
-      <Card>
+      <Card bg="dark" text="white" border="warning">
         <Card.Body>
           <h2 className="text-center mb-4">Créer un compte</h2>
 
@@ -76,14 +76,22 @@ export default function Signup() {
               </Form.Control.Feedback>
             </Form.Group>
 
-            <Button disabled={loading} type="submit" className="w-100 mt-3">
+            <Button
+              variant="warning"
+              disabled={loading}
+              type="submit"
+              className="w-100 mt-3"
+            >
               Créer le compte
             </Button>
           </Form>
         </Card.Body>
       </Card>
-      <div className="w-100 text-center">
-        Vous avez déjà un compte ? <Link to="/login">Se connecter</Link>
+      <div className="w-100 text-center text-light">
+        Vous avez déjà un compte ?{" "}
+        <Link to="/login" className="text-warning">
+          Se connecter
+        </Link>
       </div>
     </div>
   );

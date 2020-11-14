@@ -37,7 +37,7 @@ export default function Login() {
 
   return (
     <div className="w-100" style={{ maxWidth: "400px" }}>
-      <Card>
+      <Card bg="dark" text="white" border="warning">
         <Card.Body>
           <h2 className="text-center mb-4">Se connecter</h2>
           {error && <Alert variant="danger">{error}</Alert>}
@@ -69,17 +69,27 @@ export default function Login() {
               label="Se souvenir de moi"
             />
 
-            <Button disabled={loading} type="submit" className="w-100 mt-3">
+            <Button
+              disabled={loading}
+              type="submit"
+              className="w-100 mt-3"
+              variant="warning"
+            >
               Se connecter
             </Button>
           </Form>
           <div className="w-100 text-center mt-2">
-            <Link to="/forgot-password">Mot de passe oublié ?</Link>
+            <Link to="/forgot-password" className="text-warning">
+              Mot de passe oublié ?
+            </Link>
           </div>
         </Card.Body>
       </Card>
-      <div className="w-100 text-center">
-        Pas encore de compte ? <Link to="/signup">Créer un compte</Link>
+      <div className="w-100 text-center text-light">
+        Pas encore de compte ?{" "}
+        <Link to="/signup" className="text-warning">
+          Créer un compte
+        </Link>
       </div>
     </div>
   );

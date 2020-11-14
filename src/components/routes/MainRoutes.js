@@ -10,7 +10,7 @@ import PrivateRoute from "./PrivateRoute";
 
 export default function MainRoutes() {
   return (
-    <Switch className="pl-0 w-100">
+    <Switch className="pl-0 w-100 d-flex align-items-center flex-column">
       <PrivateRoute exact path="/" component={Dashboard} />
       <Route path="/signup" component={Signup} />
       <Route path="/login" component={Login} />

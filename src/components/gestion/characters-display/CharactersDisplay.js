@@ -7,7 +7,7 @@ import InfoDisplay from "./InfoDisplay";
 
 export default function CharactersDisplay({ onCharacterClick }) {
   return (
-    <>
+    <div id="character-display" className="w-100">
       <Filters />
       <InfoDisplay />
       <div className="overflow-auto" style={{ maxHeight: "50vh" }}>
@@ -16,6 +16,6 @@ export default function CharactersDisplay({ onCharacterClick }) {
           <CharactersBody onCharacterClick={onCharacterClick} />
         </Table>
       </div>
-    </>
+    </div>
   );
 }
