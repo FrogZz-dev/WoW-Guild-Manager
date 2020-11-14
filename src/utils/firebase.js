@@ -48,7 +48,7 @@ export const fireFunctions = {
         .data()
         .characters.find((character) => character.id === characterId);
       if (foundMember) {
-        member = { docId: doc.id, data: doc.data() };
+        member = { docId: doc.id, altsData: doc.data() };
       }
     });
 

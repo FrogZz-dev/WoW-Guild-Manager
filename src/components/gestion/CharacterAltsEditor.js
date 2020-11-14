@@ -1,7 +1,7 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import React, { useEffect, useRef, useState } from "react";
 import { Card } from "react-bootstrap";
-import { Redirect, useParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import { fireFunctions } from "@utils/firebase";
 import { useAuth } from "@contexts/AuthContext";
 import { useRoster } from "@contexts/RosterContext";
@@ -18,7 +18,12 @@ export default function CharacterAltsEditor({
   const [documentId, setDocumentId] = useState();
   const [alertInfo, setAlertInfo] = useState({ message: "", type: "" });
   const { currentUser } = useAuth();
-  const { loadRoster } = useRoster();
+  const {
+    loadRoster,
+    setIsAltFiltered,
+    getCharacterById,
+    isLoadingRoster,
+  } = useRoster();
 
   useState();
   const mainRef = useRef();
@@ -26,31 +31,43 @@ export default function CharacterAltsEditor({
 
   // chargement de la liste des rerolls en fonction du personnage choisi
   const loadMember = async () => {
-    const { docId, data } = await fireFunctions.getMemberAltsById(
+    const { docId, altsData } = await fireFunctions.getMemberAltsById(
       Number(characterId)
     );
-    if (data !== undefined) {
+    if (altsData !== undefined) {
       setDocumentId(docId);
-      setAltCharacters(data.characters);
-      mainRef.current.value = data.main;
+      setAltCharacters(altsData.characters);
+      mainRef.current.value = altsData.main;
+    } else {
+      setAltCharacters([getCharacterById(Number(characterId))]);
     }
   };
 
   useEffect(() => {
-    loadMember();
-  }, []);
+    if (!isLoadingRoster) {
+      loadMember();
+      setIsAltFiltered(true);
+      return () => setIsAltFiltered(false);
+    }
+  }, [isLoadingRoster]);
 
   // ajout du dernier personnage clické à la liste des rerolls
   useEffect(() => {
-    const characterFound = altCharacters.find(
-      (character) => character.id === lastCharacter.id
-    );
-    if (!characterFound) {
-      setAltCharacters((altCharacters) => [...altCharacters, lastCharacter]);
+    if (Object.keys(lastCharacter).length) {
+      const characterFound = altCharacters.find(
+        (character) => character.id === lastCharacter.id
+      );
+      if (!characterFound) {
+        setAltCharacters((altCharacters) => [...altCharacters, lastCharacter]);
+      }
     }
   }, [lastCharacter]);
 
-  // retrait d'un personnage clické dans la liste
+  useEffect(() => {
+    return () => {};
+  }, [altCharacters]);
+
+  // retrait d'un personnage clické dans la liste des alts
   const handleCharacterRemove = (e) => {
     const mainCharacterId = mainRef.current.value;
 
@@ -67,43 +84,37 @@ export default function CharacterAltsEditor({
   };
 
   const handleSave = async () => {
-    if (currentUser) {
-      try {
-        if (documentId) {
-          if (altCharacters.length > 1) {
-            await fireFunctions.updateMemberAlts(
-              documentId,
-              mainRef.current.value,
-              altCharacters
-            );
-          } else {
-            await fireFunctions.deleteMemberAlts(documentId);
-          }
+    // if (currentUser) {
+    try {
+      if (documentId) {
+        if (altCharacters.length > 1) {
+          await fireFunctions.updateMemberAlts(
+            documentId,
+            mainRef.current.value,
+            altCharacters
+          );
         } else {
-          if (altCharacters.length > 1) {
-            await fireFunctions.addMemberAlts(
-              mainRef.current.value,
-              altCharacters
-            );
-          }
+          await fireFunctions.deleteMemberAlts(documentId);
         }
-      } catch (error) {
-        console.log(error);
+      } else {
+        if (altCharacters.length > 1) {
+          await fireFunctions.addMemberAlts(
+            mainRef.current.value,
+            altCharacters
+          );
+        }
       }
-
       setAlertInfo({ message: "Rerolls enregistrés !", type: "success" });
       loadRoster();
-      setTimeout(() => {
-        setLastCharacter({});
-      }, 5000);
-    } else {
+    } catch (error) {
       setAlertInfo({ message: "Vous devez être connecté !", type: "warning" });
+      console.log(error);
     }
-  };
 
-  if (!lastCharacter.id) {
-    return <Redirect to="/management/browse" />;
-  }
+    /* } else {
+      setAlertInfo({ message: "Vous devez être connecté !", type: "warning" });
+    } */
+  };
 
   return (
     <Card
@@ -114,6 +125,7 @@ export default function CharacterAltsEditor({
       style={{ maxWidth: "400px" }}
     >
       <InfoMessage info={alertInfo} />
+
       <Card.Body>
         <MainSelection mainRef={mainRef} altCharacters={altCharacters} />
 

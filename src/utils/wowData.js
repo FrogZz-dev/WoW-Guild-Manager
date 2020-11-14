@@ -24,14 +24,15 @@ const wowData = {
   ],
 
   rankList: [
-    { id: 0, name: "GM" },
-    { id: 1, name: "Co-GM" },
+    { id: 0, name: "Maître de guilde" },
+    { id: 1, name: "Co-MG" },
     { id: 2, name: "RL Master" },
-    { id: 6, name: "Raideur" },
+    { id: 3, name: "Officier PVE" },
+    { id: 6, name: "Raiders" },
     { id: 7, name: "Membre" },
-    { id: 3, name: "C'est quoi ça?" },
-    { id: 4, name: "Hmmm?" },
-    { id: 8, name: "Tout seul" },
+    { id: 4, name: "Vétéran" },
+    { id: 8, name: "Novice" },
+    { id: 9, name: "Absence" },
   ],
 
   // récupère le token enregistré localement ou en demande un nouveau
@@ -81,7 +82,8 @@ const wowData = {
 
   // renvoie le nom du rang en fonction de son id
   getRankById(id) {
-    return this.rankList.find((rank) => rank.id === id).name;
+    const rankObject = this.rankList.find((rank) => rank.id === id);
+    return rankObject ? rankObject.name : id;
   },
 
   // chargement de la liste des personnages de la guilde
@@ -112,8 +114,6 @@ const wowData = {
       const resJson = await response.json();
 
       return resJson;
-    } else {
-      console.error(`${characterName} introuvable`);
     }
   },
 

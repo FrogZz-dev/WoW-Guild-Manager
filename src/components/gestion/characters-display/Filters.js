@@ -4,18 +4,23 @@ import { useRoster } from "@contexts/RosterContext";
 import wowData from "@utils/wowData";
 
 export default function Filters() {
-  const { filterCharacters, classes } = useRoster();
+  const { setFilters, classes } = useRoster();
 
   const searchInput = useRef();
   const classFilter = useRef();
   const rankFilter = useRef();
 
+  const validateInput = (input) => {
+    const specialChar = new RegExp(/[/*|+'"`\\@()[\]{}$@&.:;<>]/, "g");
+    return input.replace(specialChar, "");
+  };
   const handleFilterChange = () => {
+    searchInput.current.value = validateInput(searchInput.current.value);
     const nameFilter = searchInput.current.value;
     const selectedClass = classFilter.current.value;
     const selectedRank = rankFilter.current.value;
 
-    filterCharacters({ nameFilter, selectedClass, selectedRank });
+    setFilters({ nameFilter, selectedClass, selectedRank });
   };
 
   return (
@@ -31,7 +36,7 @@ export default function Filters() {
             ref={searchInput}
             placeholder="Recherche"
             autoComplete="off"
-          ></Form.Control>
+          />
         </Form.Group>
         <Form.Group as={Col} controlId="searchFilter">
           <Form.Label className="text-light">Filtrer par classe :</Form.Label>
