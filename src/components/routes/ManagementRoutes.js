@@ -9,7 +9,7 @@ export default function ManagementRoutes({ lastClicked, onCharacterClick }) {
   const { path } = useRouteMatch();
 
   return (
-    <Switch className="pl-0 d-flex justify-content-center">
+    <Switch className="pl-0 w-100 d-flex justify-content-center">
       <Route exact path={`${path}`}>
         <Redirect to={`${path}/browse`} />
       </Route>

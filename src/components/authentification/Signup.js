@@ -1,6 +1,6 @@
 import React, { useRef, useState } from "react";
 import { Alert, Button, Card, Form } from "react-bootstrap";
-import { Link } from "react-router-dom";
+import { Link, useHistory } from "react-router-dom";
 import { useAuth } from "../../contexts/AuthContext";
 
 export default function Signup() {
@@ -8,8 +8,10 @@ export default function Signup() {
   const passwordRef = useRef();
   const passwordConfirmRef = useRef();
   const [error, setError] = useState("");
+  const [successMessage, setSuccessMessage] = useState("");
   const [loading, setLoading] = useState(false);
   const { signup } = useAuth();
+  const history = useHistory();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -22,9 +24,20 @@ export default function Signup() {
       setError("");
       setLoading(true);
       await signup(emailRef.current.value, passwordRef.current.value);
-    } catch {
-      setError("Erreur lors de la création du compte.");
+      const redirectInterval = setInterval(() => {
+        setSuccessMessage("");
+        clearInterval(redirectInterval);
+        history.push("/");
+      }, 3000);
+      setSuccessMessage("Compte créé avec succès, vous allez être redirigé.");
+    } catch (error) {
+      if (error.code === "auth/email-already-in-use") {
+        setError("Cette email est déjà utilisé!");
+      } else {
+        setError("Erreur lors de la création du compte.");
+      }
     }
+
     setLoading(false);
   };
 
@@ -34,7 +47,16 @@ export default function Signup() {
         <Card.Body>
           <h2 className="text-center mb-4">Créer un compte</h2>
 
-          {error && <Alert variant="danger">{error}</Alert>}
+          {error && (
+            <Alert className="text-center" variant="danger">
+              {error}
+            </Alert>
+          )}
+          {successMessage && (
+            <Alert className="text-center" variant="success">
+              {successMessage}
+            </Alert>
+          )}
 
           <Form onSubmit={handleSubmit}>
             <Form.Group>

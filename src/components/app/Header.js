@@ -64,7 +64,7 @@ export default function Header() {
         {currentUser && (
           <Nav>
             <Nav.Item>
-              <NavLink className="nav-link" to="/profile">
+              <NavLink className="nav-link" to="/">
                 {currentUser.email}
               </NavLink>
             </Nav.Item>
