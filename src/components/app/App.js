@@ -10,7 +10,7 @@ function App() {
       <AuthProvider>
         <div id="app" className="bg-dark min-vh-100">
           <Header />
-          <Container style={{ minHeight: "85vh" }}>
+          <Container fluid="md" style={{ minHeight: "85vh" }}>
             <MainRoutes />
           </Container>
         </div>
