@@ -3,21 +3,16 @@ import React, { useEffect, useRef, useState } from "react";
 import { Card } from "react-bootstrap";
 import { useParams } from "react-router-dom";
 import { fireFunctions } from "@utils/firebase";
-import { useAuth } from "@contexts/AuthContext";
 import { useRoster } from "@contexts/RosterContext";
 import EditButtons from "./edition-items/EditButtons";
 import AltsList from "./edition-items/AltsList";
 import MainSelection from "./edition-items/MainSelection";
 import InfoMessage from "./edition-items/InfoMessage";
 
-export default function CharacterAltsEditor({
-  lastCharacter,
-  setLastCharacter,
-}) {
+export default function CharacterAltsEditor({ lastCharacter }) {
   const [altCharacters, setAltCharacters] = useState([]);
   const [documentId, setDocumentId] = useState();
   const [alertInfo, setAlertInfo] = useState({ message: "", type: "" });
-  const { currentUser } = useAuth();
   const {
     loadRoster,
     setIsAltFiltered,
