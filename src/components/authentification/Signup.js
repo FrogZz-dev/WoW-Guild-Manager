@@ -1,7 +1,8 @@
 import React, { useRef, useState } from "react";
 import { Alert, Button, Card, Form } from "react-bootstrap";
 import { Link, useHistory } from "react-router-dom";
-import { useAuth } from "../../contexts/AuthContext";
+import { useAuth } from "@contexts/AuthContext";
+import { fireUsersFunctions } from "@utils/firebase";
 
 export default function Signup() {
   const emailRef = useRef();
@@ -23,7 +24,21 @@ export default function Signup() {
     try {
       setError("");
       setLoading(true);
-      await signup(emailRef.current.value, passwordRef.current.value);
+
+      // creation de l'utilisateur, authentification Firebase
+      const { user } = await signup(
+        emailRef.current.value,
+        passwordRef.current.value
+      );
+
+      await Promise.all([
+        // ajout des informations complémentaires par défaut
+        fireUsersFunctions.createUserAccount(user),
+        // envoi de l'email de vérif
+        user.sendEmailVerification(),
+      ]);
+
+      // redirection vers l'accueil après 3s
       const redirectInterval = setInterval(() => {
         setSuccessMessage("");
         clearInterval(redirectInterval);
@@ -35,6 +50,7 @@ export default function Signup() {
         setError("Cette email est déjà utilisé!");
       } else {
         setError("Erreur lors de la création du compte.");
+        console.log(error);
       }
     }
 

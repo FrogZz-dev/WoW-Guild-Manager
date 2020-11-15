@@ -14,32 +14,62 @@ const app = firebase.initializeApp({
 
 const firestore = firebase.firestore();
 
-// ensemble des fonctions utilisées pour firestore
-export const fireFunctions = {
+// définition des références aux différentes collections
+const usersRef = firestore.collection("users");
+const groupsRef = firestore.collection("groups");
+const membersRef = firestore.collection("members");
+
+// ensemble des fonctions utilisées pour les utilisateurs
+export const fireUsersFunctions = {
+  async createUserAccount({ uid, email }) {
+    const defaultUserData = {
+      role: "visiteur",
+      mainCharacter: "",
+      email: email,
+      isActive: true,
+    };
+
+    await usersRef.doc(uid).set(defaultUserData);
+  },
+
+  async getUserAccount(userUid) {
+    const doc = await usersRef.doc(userUid).get();
+    return doc.data();
+  },
+
+  async updateUserAccount(userUid, role, mainCharacter) {
+    await usersRef.doc(userUid).set({ role, mainCharacter });
+  },
+
+  async deleteUserAccount(userUid) {
+    const user = await usersRef.doc(userUid);
+    await user.delete();
+  },
+};
+
+// ensemble des fonctions utilisées pour les groupes
+export const fireGroupsFunctions = {
   // ajout d'un groupe
   async addGroup(charactersGroup, groupName) {
-    const groupsRef = firestore.collection("groups");
-
     groupsRef.add({ membres: charactersGroup, nom: groupName });
   },
 
   // récupération des groupes
   async getGroups() {
-    const groupsRef = firestore.collection("groups");
     const docs = await groupsRef.get();
     docs.forEach((doc) => console.log(typeof doc, "=>", doc.data()));
   },
+};
 
+// ensemble des fonctions utilisées pour les alts
+export const fireAltsFunctions = {
   // ajout d'un nouveau membre
   async addMemberAlts(mainCharacterId, characters) {
-    const membersRef = firestore.collection("members");
-
     membersRef.add({ main: Number(mainCharacterId), characters: characters });
   },
 
   // récupération des inforamtion d'un membre selon l'id d'un de ses personnages
   async getMemberAltsById(characterId) {
-    const membersRef = firestore.collection("members");
     const docs = await membersRef.get();
 
     let member = {};
@@ -57,7 +87,7 @@ export const fireFunctions = {
 
   // mise à jours dés infos d'un membre existant
   async updateMemberAlts(docId, mainCharacterId, characters) {
-    const memberRef = firestore.doc(`members/${docId}`);
+    const memberRef = membersRef.doc(docId);
     await memberRef.set({
       main: Number(mainCharacterId),
       characters: characters,
@@ -65,7 +95,7 @@ export const fireFunctions = {
   },
 
   async deleteMemberAlts(docId) {
-    const memberRef = firestore.doc(`members/${docId}`);
+    const memberRef = membersRef.doc(docId);
     await memberRef.delete();
   },
 };

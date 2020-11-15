@@ -2,7 +2,7 @@ import React from "react";
 import { Button, Card } from "react-bootstrap";
 import wowData from "@utils/wowData";
 import { Link } from "react-router-dom";
-import Character from "./characters-display/Character";
+import Character from "../characters-display/Character";
 import { useAuth } from "@contexts/AuthContext";
 
 export default function CharacterCard({ lastCharacter, onCharacterClick }) {

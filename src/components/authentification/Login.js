@@ -1,7 +1,7 @@
 import React, { useRef, useState } from "react";
 import { Alert, Button, Card, Form } from "react-bootstrap";
 import { Link, useHistory } from "react-router-dom";
-import { useAuth } from "../../contexts/AuthContext";
+import { useAuth } from "@contexts/AuthContext";
 
 export default function Login() {
   const [error, setError] = useState("");
@@ -24,10 +24,12 @@ export default function Login() {
       await login(email, password, rememberMe);
       history.push("/");
     } catch (err) {
-      if (error.code === "auth/wrong-password") {
+      if (err.code === "auth/wrong-password") {
         setError("Mot de passe incorrect");
-      } else if (error.code === "auth/user-not-found") {
+      } else if (err.code === "auth/user-not-found") {
         setError("Email non reconnu");
+      } else if (err.code === "auth/too-many-requests") {
+        setError("Compte désactivé temporairement, réessayez plus tard !");
       } else {
         setError("Erreur lors de la connexion");
       }

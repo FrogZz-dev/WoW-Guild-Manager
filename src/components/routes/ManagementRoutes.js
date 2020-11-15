@@ -1,9 +1,9 @@
 import React from "react";
 import Switch from "react-bootstrap/esm/Switch";
 import { Redirect, Route, useRouteMatch } from "react-router-dom";
-import CharacterCard from "@components/gestion/CharacterCard";
-import GroupEditor from "@components/gestion/GroupEditor";
-import CharacterAltsEditor from "@components/gestion/CharacterAltsEditor";
+import CharacterCard from "../gestion/alts-manager/CharacterCard";
+import CharacterAltsEditor from "../gestion/alts-manager/CharacterAltsEditor";
+import GroupsCard from "../gestion/groups-manager/GroupsCard";
 
 export default function ManagementRoutes({ lastClicked, onCharacterClick }) {
   const { path } = useRouteMatch();
@@ -26,7 +26,7 @@ export default function ManagementRoutes({ lastClicked, onCharacterClick }) {
         />
       </Route>
       <Route path={`${path}/groups`}>
-        <GroupEditor />
+        <GroupsCard />
       </Route>
     </Switch>
   );

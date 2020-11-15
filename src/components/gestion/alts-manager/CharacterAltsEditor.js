@@ -2,12 +2,12 @@
 import React, { useEffect, useRef, useState } from "react";
 import { Card } from "react-bootstrap";
 import { useParams } from "react-router-dom";
-import { fireFunctions } from "@utils/firebase";
+import { fireAltsFunctions } from "@utils/firebase";
 import { useRoster } from "@contexts/RosterContext";
-import EditButtons from "./edition-items/EditButtons";
-import AltsList from "./edition-items/AltsList";
-import MainSelection from "./edition-items/MainSelection";
-import InfoMessage from "./edition-items/InfoMessage";
+import EditButtons from "../edition-items/EditButtons";
+import AltsList from "../edition-items/AltsList";
+import MainSelection from "../edition-items/MainSelection";
+import InfoMessage from "../edition-items/InfoMessage";
 
 export default function CharacterAltsEditor({ lastCharacter }) {
   const [altCharacters, setAltCharacters] = useState([]);
@@ -26,7 +26,7 @@ export default function CharacterAltsEditor({ lastCharacter }) {
 
   // chargement de la liste des rerolls en fonction du personnage choisi
   const loadMember = async () => {
-    const { docId, altsData } = await fireFunctions.getMemberAltsById(
+    const { docId, altsData } = await fireAltsFunctions.getMemberAltsById(
       Number(characterId)
     );
     if (altsData !== undefined) {
@@ -83,17 +83,17 @@ export default function CharacterAltsEditor({ lastCharacter }) {
     try {
       if (documentId) {
         if (altCharacters.length > 1) {
-          await fireFunctions.updateMemberAlts(
+          await fireAltsFunctions.updateMemberAlts(
             documentId,
             mainRef.current.value,
             altCharacters
           );
         } else {
-          await fireFunctions.deleteMemberAlts(documentId);
+          await fireAltsFunctions.deleteMemberAlts(documentId);
         }
       } else {
         if (altCharacters.length > 1) {
-          await fireFunctions.addMemberAlts(
+          await fireAltsFunctions.addMemberAlts(
             mainRef.current.value,
             altCharacters
           );

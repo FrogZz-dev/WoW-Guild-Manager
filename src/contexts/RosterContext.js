@@ -1,7 +1,7 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import React, { createContext, useContext, useEffect, useState } from "react";
 import wowData from "@utils/wowData";
-import { fireFunctions } from "@utils/firebase";
+import { fireAltsFunctions } from "@utils/firebase";
 
 const region = process.env.REACT_APP_BLIZZARD_REGION;
 const realm = process.env.REACT_APP_BLIZZARD_REALM;
@@ -162,7 +162,7 @@ export default function RosterProvider({ children }) {
               realm,
               rawCharacter.character.name
             ),
-            fireFunctions.getMemberAltsById(rawCharacter.character.id),
+            fireAltsFunctions.getMemberAltsById(rawCharacter.character.id),
           ]);
 
           if (memberData === undefined) {

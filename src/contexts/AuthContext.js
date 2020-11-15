@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useEffect, useState } from "react";
-import { auth, persistence } from "../utils/firebase";
+import { auth, persistence, fireUsersFunctions } from "@utils/firebase";
 
 const AuthContext = createContext();
 
@@ -9,7 +9,11 @@ export const useAuth = () => {
 
 export function AuthProvider({ children }) {
   const [currentUser, setCurrentUser] = useState();
+  const [userInfo, setUserInfo] = useState(null);
   const [loading, setLoading] = useState(true);
+
+  // initialise la langue, utile pour les mails envoyés aux utilisateurs
+  auth.useDeviceLanguage();
 
   const signup = (email, password) => {
     return auth.createUserWithEmailAndPassword(email, password);
@@ -29,19 +33,44 @@ export function AuthProvider({ children }) {
   };
 
   const resetPassword = (email) => {
-    auth.useDeviceLanguage();
     return auth.sendPasswordResetEmail(email);
   };
 
+  const deleteAccount = async () => {
+    await currentUser.delete();
+  };
+
   useEffect(() => {
-    const unsubscribe = auth.onAuthStateChanged((user) => {
+    const unsubscribe = auth.onAuthStateChanged(async (user) => {
       setCurrentUser(user);
+
+      if (user) {
+        const userData = await fireUsersFunctions.getUserAccount(user.uid);
+        if (userData) {
+          setUserInfo(userData);
+        }
+
+        if (!user.displayName) {
+          user.updateProfile({
+            displayName: user.email.split("@")[0],
+          });
+        }
+      }
       setLoading(false);
     });
     return unsubscribe;
   }, []);
 
-  const value = { currentUser, signup, login, logout, resetPassword };
+  const value = {
+    currentUser,
+    userInfo,
+    setUserInfo,
+    signup,
+    login,
+    logout,
+    resetPassword,
+    deleteAccount,
+  };
   return (
     <AuthContext.Provider value={value}>
       {!loading && children}

@@ -6,7 +6,7 @@ export default function AltsList({ altCharacters, onRemove }) {
     <ul>
       {altCharacters.map((character) => (
         <li
-          key={Math.floor(Math.random() * 1000 * 1000)}
+          key={character.id}
           className={`character ${wowData.validateName(character.className)}`}
           id={character.id}
           onClick={onRemove}
