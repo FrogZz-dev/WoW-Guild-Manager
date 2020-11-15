@@ -4,7 +4,7 @@ import {
   faTools,
 } from "@fortawesome/free-solid-svg-icons";
 import React from "react";
-import { Card, Spinner } from "react-bootstrap";
+import { Card } from "react-bootstrap";
 
 export default function WorkInProgress() {
   return (
