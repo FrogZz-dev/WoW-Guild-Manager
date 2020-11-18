@@ -1,12 +1,14 @@
 import React from "react";
 import Switch from "react-bootstrap/esm/Switch";
 import { Route } from "react-router-dom";
-import Dashboard from "@components/authentification/Dashboard";
-import Login from "@components/authentification/Login";
-import Signup from "@components/authentification/Signup";
-import PasswordReset from "@components/authentification/PasswordReset";
-import Management from "@components/gestion/Management";
+import Dashboard from "../authentification/Dashboard";
+import Login from "../authentification/Login";
+import Signup from "../authentification/Signup";
+import PasswordReset from "../authentification/PasswordReset";
+import Members from "../members/Members";
 import PrivateRoute from "./PrivateRoute";
+import GroupsCard from "../groups/GroupsCard";
+import GroupEditor from "../groups/GroupEditor";
 
 export default function MainRoutes() {
   return (
@@ -15,7 +17,9 @@ export default function MainRoutes() {
       <Route path="/signup" component={Signup} />
       <Route path="/login" component={Login} />
       <Route path="/forgot-password" component={PasswordReset} />
-      <Route path="/management" component={Management} />
+      <Route path="/members" component={Members} />
+      <Route exact path="/groups" component={GroupsCard} />
+      <Route path="/groups/edit-group/:groupId" component={GroupEditor} />
     </Switch>
   );
 }

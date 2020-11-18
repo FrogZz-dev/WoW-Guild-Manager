@@ -51,7 +51,11 @@ export const fireUsersFunctions = {
 export const fireGroupsFunctions = {
   // ajout d'un groupe
   async addGroup(charactersGroup, groupName) {
-    groupsRef.add({ membres: charactersGroup, nom: groupName });
+    const result = await groupsRef.add({
+      membres: charactersGroup,
+      nom: groupName,
+    });
+    return result?.id;
   },
 
   // récupération des groupes
