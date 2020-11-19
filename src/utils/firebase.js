@@ -52,16 +52,28 @@ export const fireGroupsFunctions = {
   // ajout d'un groupe
   async addGroup(charactersGroup, groupName) {
     const result = await groupsRef.add({
-      membres: charactersGroup,
-      nom: groupName,
+      characters: charactersGroup,
+      name: groupName,
     });
     return result?.id;
   },
 
   // récupération des groupes
   async getGroups() {
-    const docs = await groupsRef.get();
-    docs.forEach((doc) => console.log(typeof doc, "=>", doc.data()));
+    const groups = await groupsRef.get();
+    let groupsData = [];
+
+    groups.forEach((group) => {
+      groupsData = [{ ...group.data(), id: group.id }, ...groupsData];
+    });
+
+    return groupsData;
+  },
+
+  // suppression d'un groupe
+  async deleteGroup(groupId) {
+    const groupRef = await groupsRef.doc(groupId);
+    await groupRef.delete();
   },
 };
 
@@ -72,7 +84,7 @@ export const fireAltsFunctions = {
     membersRef.add({ main: Number(mainCharacterId), characters: characters });
   },
 
-  // récupération des inforamtion d'un membre selon l'id d'un de ses personnages
+  // récupération des information d'un membre selon l'id d'un de ses personnages
   async getMemberAltsById(characterId) {
     const docs = await membersRef.get();
 

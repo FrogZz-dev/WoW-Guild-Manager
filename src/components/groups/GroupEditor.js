@@ -78,7 +78,6 @@ export default function GroupEditor({ lastCharacter }) {
 
   return (
     <>
-      {success && <Alert variant="success">{success}</Alert>}
       {error && <Alert variant="danger">{error}</Alert>}
       <GroupEditorCard
         groupName={groupName}
