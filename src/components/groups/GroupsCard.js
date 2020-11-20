@@ -17,6 +17,9 @@ export default function GroupsCard() {
     if (loadedGroups.length) {
       setSelectedGroup(loadedGroups[0]);
       setGroupsExists(true);
+    } else {
+      setSelectedGroup(undefined);
+      setGroupsExists(false);
     }
   };
   useEffect(() => {
@@ -29,6 +32,7 @@ export default function GroupsCard() {
   };
 
   const handleGroupSelection = (e) => {
+    console.log(e.target.value);
     setSelectedGroup(getGroupById(e.target.value));
   };
 
@@ -45,29 +49,35 @@ export default function GroupsCard() {
       className="w-100 "
       style={{ maxWidth: "650px" }}
     >
-      <Card.Body className="pl-2 pr-2">
-        <Card.Header className="d-flex justify-content-around align-items-center">
-          {!groupsExists && <p>Aucun groupe existant</p>}
-          {groupsExists && (
-            <GroupSelector
-              groups={groups}
-              selectedGroupId={selectedGroup.id}
-              onGroupSelection={handleGroupSelection}
+      <Card.Header className="d-flex justify-content-around align-items-center">
+        {!groupsExists && <p>Aucun groupe existant</p>}
+        {groupsExists && (
+          <GroupSelector
+            groups={groups}
+            selectedGroupId={selectedGroup?.id}
+            onGroupSelection={handleGroupSelection}
+          />
+        )}
+        <Link className="text-warning" to="/groups/edit-group/new-group">
+          <Button variant="warning">Créer un groupe</Button>
+        </Link>
+      </Card.Header>
+      {groupsExists && (
+        <>
+          <Card.Body className="pl-2 pr-2">
+            <Card.Title className="text-center">
+              {selectedGroup?.name ?? ""}
+            </Card.Title>
+            <GroupDisplay groupCharactersList={selectedGroup?.characters} />
+          </Card.Body>
+          <Card.Footer>
+            <GroupControls
+              selectedGroup={selectedGroup}
+              onDelete={handleGroupDelete}
             />
-          )}
-          <Link className="text-warning" to="/groups/edit-group/new-group">
-            <Button variant="warning">Créer un groupe</Button>
-          </Link>
-        </Card.Header>
-        <Card.Title>Nom du groupe</Card.Title>
-        <GroupDisplay groupCharactersList={selectedGroup?.characters} />
-      </Card.Body>
-      <Card.Footer>
-        <GroupControls
-          selectedGroup={selectedGroup}
-          onDelete={handleGroupDelete}
-        />
-      </Card.Footer>
+          </Card.Footer>
+        </>
+      )}
     </Card>
   );
 }

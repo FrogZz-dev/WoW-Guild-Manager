@@ -70,6 +70,18 @@ export const fireGroupsFunctions = {
     return groupsData;
   },
 
+  async getGroupById(groupId) {
+    const group = await groupsRef.doc(groupId).get();
+    return group.data();
+  },
+
+  async updateGroup(charactersGroup, groupName, groupId) {
+    await groupsRef.doc(groupId).set({
+      characters: charactersGroup,
+      name: groupName,
+    });
+  },
+
   // suppression d'un groupe
   async deleteGroup(groupId) {
     const groupRef = await groupsRef.doc(groupId);

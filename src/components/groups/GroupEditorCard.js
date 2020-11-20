@@ -8,6 +8,7 @@ export default function GroupEditorCard({
   groupName,
   groupCharacters,
   onSave,
+  onCharacterClick,
 }) {
   return (
     <Card bg="dark" border="warning" text="white">
@@ -22,9 +23,14 @@ export default function GroupEditorCard({
         />
       </Card.Header>
       <Card.Body>
-        <GroupDisplay groupCharactersList={groupCharacters} />
-        <EditButtons onSave={onSave} returnPath="/groups" />
+        <GroupDisplay
+          groupCharactersList={groupCharacters}
+          onCharacterClick={onCharacterClick}
+        />
       </Card.Body>
+      <Card.Footer>
+        <EditButtons onSave={onSave} returnPath="/groups" />
+      </Card.Footer>
     </Card>
   );
 }

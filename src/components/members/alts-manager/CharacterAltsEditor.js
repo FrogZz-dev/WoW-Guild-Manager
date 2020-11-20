@@ -128,8 +128,10 @@ export default function CharacterAltsEditor({ lastCharacter = {} }) {
           altCharacters={altCharacters}
           onRemove={handleCharacterRemove}
         />
-        <EditButtons onSave={handleSave} returnPath="/members/browse" />
       </Card.Body>
+      <Card.Footer>
+        <EditButtons onSave={handleSave} returnPath="/members/browse" />
+      </Card.Footer>
     </Card>
   );
 }
