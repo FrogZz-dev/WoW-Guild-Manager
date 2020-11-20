@@ -1,0 +1,70 @@
+#group-display {
+  width: 100%;
+  min-width: 450px;
+  max-width: 650px;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  flex-wrap: wrap;
+  margin-bottom: 10px;
+}
+
+.group-character {
+  width: 18%;
+  min-width: 87px;
+  cursor: pointer;
+  color: var(--dark);
+  text-align: center;
+  font-size: 0.75rem;
+  font-weight: bold;
+  padding: 10px 0;
+  margin: 2px;
+}
+
+.chevalier-de-la-mort-group {
+  background-color: #c41f3b;
+}
+
+.chasseur-de-démons-group {
+  background-color: #a330c9;
+}
+
+.druide-group {
+  background-color: #ff7d0a;
+}
+
+.chasseur-group {
+  background-color: #abd473;
+}
+
+.mage-group {
+  background-color: #69ccf0;
+}
+
+.moine-group {
+  background-color: #00ff96;
+}
+
+.paladin-group {
+  background-color: #f58cba;
+}
+
+.prêtre-group {
+  background-color: #ffffff;
+}
+
+.voleur-group {
+  background-color: #fff569;
+}
+
+.chaman-group {
+  background-color: #0070de;
+}
+
+.démoniste-group {
+  background-color: #9482c9;
+}
+
+.guerrier-group {
+  background-color: #c79c6e;
+}

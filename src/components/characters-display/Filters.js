@@ -38,7 +38,7 @@ export default function Filters() {
             autoComplete="off"
           />
         </Form.Group>
-        <Form.Group as={Col} controlId="searchFilter">
+        <Form.Group as={Col} controlId="classFilter">
           <Form.Label className="text-light">Filtrer par classe :</Form.Label>
           <Form.Control
             as="select"
@@ -55,7 +55,7 @@ export default function Filters() {
             ))}
           </Form.Control>
         </Form.Group>
-        <Form.Group as={Col} controlId="searchFilter">
+        <Form.Group as={Col} controlId="rankFilter">
           <Form.Label className="text-light">Filtrer par rang :</Form.Label>
           <Form.Control
             as="select"

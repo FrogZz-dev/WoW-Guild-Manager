@@ -1,5 +1,5 @@
 import React from "react";
-import { Dropdown, Nav, Navbar, NavItem } from "react-bootstrap";
+import { Nav, Navbar } from "react-bootstrap";
 import { NavLink } from "react-router-dom";
 import { useAuth } from "@contexts/AuthContext";
 import "@styles/style.css";
@@ -10,7 +10,9 @@ export default function Header() {
   const handleDisconnect = async () => {
     try {
       await logout();
-    } catch (error) {}
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   return (
@@ -30,19 +32,12 @@ export default function Header() {
           <NavLink className="nav-link" exact to="/">
             Accueil
           </NavLink>
-          <Dropdown as={NavItem}>
-            <Dropdown.Toggle as={NavItem} className="nav-link">
-              Gestion
-            </Dropdown.Toggle>
-            <Dropdown.Menu className="bg-dark text-light">
-              <Dropdown.Item as={NavLink} to="/management/browse">
-                Parcourir
-              </Dropdown.Item>
-              <Dropdown.Item as={NavLink} to="/management/groups">
-                Groupes
-              </Dropdown.Item>
-            </Dropdown.Menu>
-          </Dropdown>
+          <NavLink className="nav-link" exact to="/members/browse">
+            Membres
+          </NavLink>
+          <NavLink className="nav-link" exact to="/groups">
+            Groupes
+          </NavLink>
         </Nav>
 
         {!currentUser && (

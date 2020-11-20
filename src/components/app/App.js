@@ -3,6 +3,7 @@ import { AuthProvider } from "../../contexts/AuthContext";
 import Header from "./Header";
 import MainRoutes from "@components/routes/MainRoutes";
 import { BrowserRouter as Router } from "react-router-dom";
+import RosterProvider from "../../contexts/RosterContext";
 
 function App() {
   return (
@@ -10,9 +11,11 @@ function App() {
       <AuthProvider>
         <div id="app" className="bg-dark min-vh-100">
           <Header />
-          <Container fluid="md" style={{ minHeight: "85vh" }}>
-            <MainRoutes />
-          </Container>
+          <RosterProvider>
+            <Container fluid="md" style={{ minHeight: "85vh" }}>
+              <MainRoutes />
+            </Container>
+          </RosterProvider>
         </div>
       </AuthProvider>
     </Router>

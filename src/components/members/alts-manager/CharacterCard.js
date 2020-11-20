@@ -2,10 +2,13 @@ import React from "react";
 import { Button, Card } from "react-bootstrap";
 import wowData from "@utils/wowData";
 import { Link } from "react-router-dom";
-import Character from "../characters-display/Character";
+import Character from "../../characters-display/Character";
 import { useAuth } from "@contexts/AuthContext";
 
-export default function CharacterCard({ lastCharacter, onCharacterClick }) {
+export default function CharacterCard({
+  lastCharacter = {},
+  onCharacterClick,
+}) {
   const { id, name, className, spec, level, iLvl, rank, alts } = lastCharacter;
   const { currentUser } = useAuth();
 
@@ -52,7 +55,7 @@ export default function CharacterCard({ lastCharacter, onCharacterClick }) {
 
               <hr className="bg-light" />
               {currentUser && (
-                <Link to={`/management/edit-character/${id}`}>
+                <Link to={`/members/edit-character/${id}`}>
                   <Button variant="warning">Modifier les rerolls</Button>
                 </Link>
               )}
