@@ -15,21 +15,20 @@ export default function GroupEditor() {
 
   const history = useHistory();
 
-  const loadGroup = async () => {
-    try {
-      const groupData = await fireGroupsFunctions.getGroupById(groupId);
-      if (groupData) {
-        setGroupName(groupData.name);
-        setGroupCharacters(groupData.characters);
-        setIsModify(true);
-      }
-    } catch (error) {
-      console.log(error);
-    }
-  };
-
   useEffect(() => {
     if (groupId !== "new-group") {
+      const loadGroup = async () => {
+        try {
+          const groupData = await fireGroupsFunctions.getGroupById(groupId);
+          if (groupData) {
+            setGroupName(groupData.name);
+            setGroupCharacters(groupData.characters);
+            setIsModify(true);
+          }
+        } catch (error) {
+          console.log(error);
+        }
+      };
       loadGroup();
     }
   }, [groupId]);

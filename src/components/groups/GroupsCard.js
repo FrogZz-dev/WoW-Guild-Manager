@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Button, Card, Form } from "react-bootstrap";
+import { Button, Card } from "react-bootstrap";
 import { Link } from "react-router-dom";
 import GroupDisplay from "./GroupDisplay";
 import { fireGroupsFunctions } from "../../utils/firebase";
@@ -32,7 +32,6 @@ export default function GroupsCard() {
   };
 
   const handleGroupSelection = (e) => {
-    console.log(e.target.value);
     setSelectedGroup(getGroupById(e.target.value));
   };
 
