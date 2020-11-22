@@ -1,5 +1,5 @@
 import React from "react";
-import wowData from "@utils/wowData";
+import { validateName } from "@utils/utilities";
 
 export default function AltsList({ altCharacters, onRemove }) {
   return (
@@ -7,7 +7,7 @@ export default function AltsList({ altCharacters, onRemove }) {
       {altCharacters.map((character) => (
         <li
           key={character.id}
-          className={`character ${wowData.validateName(character.className)}`}
+          className={`character ${validateName(character.className)}`}
           id={character.id}
           onClick={onRemove}
         >

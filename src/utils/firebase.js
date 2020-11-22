@@ -12,6 +12,8 @@ const app = firebase.initializeApp({
   appId: process.env.REACT_APP_FIREBASE_APP_ID,
 });
 
+export const roles = ["unknown", "Visiteur", "Membre", "Admin"];
+
 const firestore = firebase.firestore();
 
 // définition des références aux différentes collections
@@ -23,7 +25,7 @@ const membersRef = firestore.collection("members");
 export const fireUsersFunctions = {
   async createUserAccount({ uid, email }) {
     const defaultUserData = {
-      role: "visiteur",
+      role: 1,
       mainCharacter: "",
       email: email,
       isActive: true,

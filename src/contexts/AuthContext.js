@@ -40,18 +40,28 @@ export function AuthProvider({ children }) {
     await currentUser.delete();
   };
 
+  const isVerifiedOnline = () => {
+    return currentUser?.emailVerified;
+  };
+
+  const isMember = () => {
+    return currentUser && userInfo?.role > 1;
+  };
+
   useEffect(() => {
     const unsubscribe = auth.onAuthStateChanged(async (user) => {
       setCurrentUser(user);
 
       if (user) {
+        // si un utilisateur est présent on récupère les infos supplémentaires
         const userData = await fireUsersFunctions.getUserAccount(user.uid);
         if (userData) {
           setUserInfo(userData);
         }
 
+        // si l'utilisateur n'a pas de pseudo on en crée un par défaut à partir de l'adresse mail
         if (!user.displayName) {
-          user.updateProfile({
+          await user.updateProfile({
             displayName: user.email.split("@")[0],
           });
         }
@@ -70,6 +80,8 @@ export function AuthProvider({ children }) {
     logout,
     resetPassword,
     deleteAccount,
+    isVerifiedOnline,
+    isMember,
   };
   return (
     <AuthContext.Provider value={value}>

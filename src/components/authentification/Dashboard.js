@@ -2,7 +2,7 @@ import React, { useRef, useState } from "react";
 import { Alert, Button, Card, Form } from "react-bootstrap";
 import { useHistory } from "react-router-dom";
 import { useAuth } from "@contexts/AuthContext";
-import { auth, fireUsersFunctions } from "@utils/firebase";
+import { auth, fireUsersFunctions, roles } from "@utils/firebase";
 
 export default function Dashboard() {
   const [error, setError] = useState("");
@@ -98,7 +98,7 @@ export default function Dashboard() {
             <strong>Email: </strong> {currentUser.email}
           </p>
           <p>
-            <strong>Role: </strong> {userInfo?.role}
+            <strong>Role: </strong> {roles[userInfo?.role]}
           </p>
           <p>
             <strong>Main: </strong> {userInfo?.mainCharacter}

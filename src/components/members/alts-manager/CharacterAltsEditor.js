@@ -4,6 +4,7 @@ import { Card } from "react-bootstrap";
 import { useParams } from "react-router-dom";
 import { fireAltsFunctions } from "@utils/firebase";
 import { useRoster } from "../../../contexts/RosterContext";
+import { useAuth } from "../../../contexts/AuthContext";
 import EditButtons from "../../edition-items/EditButtons";
 import AltsList from "../../edition-items/AltsList";
 import MainSelection from "../../edition-items/MainSelection";
@@ -20,7 +21,7 @@ export default function CharacterAltsEditor({ lastCharacter = {} }) {
     isLoadingRoster,
   } = useRoster();
 
-  useState();
+  const { isMember, isVerifiedOnline } = useAuth();
   const mainRef = useRef();
   const { characterId } = useParams();
 
@@ -79,7 +80,23 @@ export default function CharacterAltsEditor({ lastCharacter = {} }) {
   };
 
   const handleSave = async () => {
-    // if (currentUser) {
+    if (!isMember()) {
+      setAlertInfo({
+        message: "Vous devez être membre pour accéder à la sauvegarde !",
+        type: "warning",
+      });
+      return;
+    }
+
+    if (!isVerifiedOnline()) {
+      setAlertInfo({
+        message:
+          "Vous devez être connecté avec un compte vérifié pour accéder à la sauvegarde !",
+        type: "warning",
+      });
+      return;
+    }
+
     try {
       if (documentId) {
         if (altCharacters.length > 1) {
@@ -102,13 +119,12 @@ export default function CharacterAltsEditor({ lastCharacter = {} }) {
       setAlertInfo({ message: "Rerolls enregistrés !", type: "success" });
       loadRoster();
     } catch (error) {
-      setAlertInfo({ message: "Vous devez être connecté !", type: "warning" });
+      setAlertInfo({
+        message: "Vous devez être connecté !",
+        type: "warning",
+      });
       console.log(error);
     }
-
-    /* } else {
-      setAlertInfo({ message: "Vous devez être connecté !", type: "warning" });
-    } */
   };
 
   return (

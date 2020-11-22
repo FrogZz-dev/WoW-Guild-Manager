@@ -1,16 +1,21 @@
 import React from "react";
 import { Button, Card } from "react-bootstrap";
-import wowData from "@utils/wowData";
-import { Link } from "react-router-dom";
+import { useHistory } from "react-router-dom";
 import Character from "../../characters-display/Character";
 import { useAuth } from "@contexts/AuthContext";
+import { validateName } from "@utils/utilities";
 
 export default function CharacterCard({
   lastCharacter = {},
   onCharacterClick,
 }) {
   const { id, name, className, spec, level, iLvl, rank, alts } = lastCharacter;
-  const { currentUser } = useAuth();
+  const { isVerifiedOnline } = useAuth();
+  const history = useHistory();
+
+  const handleModifyAlts = () => {
+    history.push(`/members/edit-character/${id}`);
+  };
 
   return (
     <>
@@ -27,9 +32,7 @@ export default function CharacterCard({
           {id && (
             <>
               <Card.Title
-                className={`text-center character ${wowData.validateName(
-                  className
-                )}`}
+                className={`text-center character ${validateName(className)}`}
               >
                 {name}
               </Card.Title>
@@ -52,19 +55,20 @@ export default function CharacterCard({
                   />
                 ))}
               </Card.Text>
-
-              <hr className="bg-light" />
-              {currentUser && (
-                <Link to={`/members/edit-character/${id}`}>
-                  <Button variant="warning">Modifier les rerolls</Button>
-                </Link>
-              )}
-              {!currentUser && (
-                <span>Connectez-vous pour effectuer des modifications</span>
-              )}
             </>
           )}
         </Card.Body>
+        {isVerifiedOnline() && (
+          <Card.Footer>
+            <Button
+              variant="warning"
+              onClick={handleModifyAlts}
+              disabled={!id ? true : false}
+            >
+              Modifier les rerolls
+            </Button>
+          </Card.Footer>
+        )}
       </Card>
     </>
   );

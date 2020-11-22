@@ -1,3 +1,5 @@
+import { validateName } from "./utilities";
+
 const apiKey = process.env.REACT_APP_BLIZZARD_API_CLIENT_ID;
 const apiSecret = process.env.REACT_APP_BLIZZARD_API_CLIENT_SECRET;
 // const redirectUri = process.env.REACT_APP_BLIZZARD_API_REDIRECT_URI;
@@ -75,11 +77,6 @@ const wowData = {
     throw new Error("Erreur lors de la récupération du token");
   },
 
-  // renvoie le nom au format adapté pour l'url: en minuscules, les espaces remplacés par des -
-  validateName(inputText) {
-    return inputText.toLowerCase().split(" ").join("-");
-  },
-
   // renvoie le nom du rang en fonction de son id
   getRankById(id) {
     const rankObject = this.rankList.find((rank) => rank.id === id);
@@ -88,7 +85,7 @@ const wowData = {
 
   // chargement de la liste des personnages de la guilde
   async getGuildRoster(region, realm, guildName) {
-    const validGuildName = this.validateName(guildName);
+    const validGuildName = validateName(guildName);
     const fetchUri = `https://${region}.api.blizzard.com/data/wow/guild/${realm}/${validGuildName}/roster?namespace=profile-${region}&access_token=${clientAccessToken}`;
 
     const response = await fetch(fetchUri);
@@ -106,7 +103,7 @@ const wowData = {
 
   // chargement des informations d'un personnage
   async getCharacterInfo(region, realm, characterName) {
-    const validCharacterName = this.validateName(characterName);
+    const validCharacterName = validateName(characterName);
     const fetchUri = `https://${region}.api.blizzard.com/profile/wow/character/${realm}/${validCharacterName}?namespace=profile-${region}&locale=fr_Fr&access_token=${clientAccessToken}`;
 
     const response = await fetch(fetchUri);

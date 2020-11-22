@@ -1,15 +1,20 @@
 import React, { useEffect, useState } from "react";
-import { Button, Card } from "react-bootstrap";
-import { Link } from "react-router-dom";
+import { Alert, Button, Card } from "react-bootstrap";
+import { useHistory } from "react-router-dom";
 import GroupDisplay from "./GroupDisplay";
 import { fireGroupsFunctions } from "../../utils/firebase";
 import GroupSelector from "./GroupSelector";
 import GroupControls from "./GroupControls";
 
+import { useAuth } from "@contexts/AuthContext";
+
 export default function GroupsCard() {
+  const { isVerifiedOnline } = useAuth();
   const [groups, setGroups] = useState([]);
   const [selectedGroup, setSelectedGroup] = useState(undefined);
   const [groupsExists, setGroupsExists] = useState(false);
+  const [alert, setAlert] = useState("");
+  const history = useHistory();
 
   const groupsLoad = async () => {
     const loadedGroups = await fireGroupsFunctions.getGroups();
@@ -40,43 +45,54 @@ export default function GroupsCard() {
     await groupsLoad();
   };
 
+  const handleGroupCreation = () => {
+    history.push("/groups/edit-group/new-group");
+  };
+
   return (
-    <Card
-      bg="dark"
-      border="warning"
-      text="white"
-      className="w-100 "
-      style={{ maxWidth: "650px" }}
-    >
-      <Card.Header className="d-flex justify-content-around align-items-center">
-        {!groupsExists && <p>Aucun groupe existant</p>}
-        {groupsExists && (
-          <GroupSelector
-            groups={groups}
-            selectedGroupId={selectedGroup?.id}
-            onGroupSelection={handleGroupSelection}
-          />
-        )}
-        <Link className="text-warning" to="/groups/edit-group/new-group">
-          <Button variant="warning">Créer un groupe</Button>
-        </Link>
-      </Card.Header>
-      {groupsExists && (
-        <>
-          <Card.Body className="pl-2 pr-2">
-            <Card.Title className="text-center">
-              {selectedGroup?.name ?? ""}
-            </Card.Title>
-            <GroupDisplay groupCharactersList={selectedGroup?.characters} />
-          </Card.Body>
-          <Card.Footer>
-            <GroupControls
-              selectedGroup={selectedGroup}
-              onDelete={handleGroupDelete}
+    <>
+      {alert && <Alert variant="warning">{alert}</Alert>}
+      <Card
+        bg="dark"
+        border="warning"
+        text="white"
+        className="w-100 "
+        style={{ maxWidth: "650px" }}
+      >
+        <Card.Header className="d-flex justify-content-around align-items-center">
+          {!groupsExists && <p>Aucun groupe existant</p>}
+          {groupsExists && (
+            <GroupSelector
+              groups={groups}
+              selectedGroupId={selectedGroup?.id}
+              onGroupSelection={handleGroupSelection}
             />
-          </Card.Footer>
-        </>
-      )}
-    </Card>
+          )}
+          {isVerifiedOnline() && (
+            <Button variant="warning" onClick={handleGroupCreation}>
+              Créer un groupe
+            </Button>
+          )}
+        </Card.Header>
+        {groupsExists && (
+          <>
+            <Card.Body className="pl-2 pr-2">
+              <Card.Title className="text-center">
+                {selectedGroup?.name ?? ""}
+              </Card.Title>
+              <GroupDisplay groupCharactersList={selectedGroup?.characters} />
+            </Card.Body>
+            {isVerifiedOnline() && (
+              <Card.Footer>
+                <GroupControls
+                  selectedGroup={selectedGroup}
+                  onDelete={handleGroupDelete}
+                />
+              </Card.Footer>
+            )}
+          </>
+        )}
+      </Card>
+    </>
   );
 }

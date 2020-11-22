@@ -4,14 +4,15 @@ import { useHistory, useParams } from "react-router-dom";
 import CharactersDisplay from "../characters-display/CharactersDisplay";
 import GroupEditorCard from "./GroupEditorCard";
 import { fireGroupsFunctions } from "@utils/firebase";
+import { useAuth } from "@contexts/AuthContext";
 
 export default function GroupEditor() {
   const { groupId } = useParams();
   const [groupName, setGroupName] = useState("");
   const [groupCharacters, setGroupCharacters] = useState([]);
   const [isModify, setIsModify] = useState(false);
-  const [error, setError] = useState("");
-  const [success, setSuccess] = useState("");
+  const [message, setMessage] = useState(undefined);
+  const { isMember, isVerifiedOnline } = useAuth();
 
   const history = useHistory();
 
@@ -40,8 +41,8 @@ export default function GroupEditor() {
   };
 
   const handleCharacterSelection = (character) => {
-    setSuccess("");
-    setError("");
+    setMessage(undefined);
+
     if (
       !groupCharacters.find(
         (groupCharacter) => groupCharacter.id === character.id
@@ -50,21 +51,43 @@ export default function GroupEditor() {
     ) {
       setGroupCharacters((groupCharacters) => [...groupCharacters, character]);
     } else if (groupCharacters.length === 40) {
-      setError("Le groupe contient déjà 40 personnes!");
+      setMessage({
+        text: "Le groupe contient déjà 40 personnes!",
+        type: "danger",
+      });
     }
   };
 
   const handleGroupSave = async () => {
-    setError("");
-    setSuccess("");
+    setMessage(undefined);
+
+    if (!isMember()) {
+      setMessage({
+        text: "Vous devez être membre pour accéder à la sauvegarde !",
+        type: "warning",
+      });
+      return;
+    }
+
+    if (!isVerifiedOnline()) {
+      setMessage({
+        text:
+          "Vous devez être connecté avec un compte vérifié pour accéder à la sauvegarde !",
+        type: "warning",
+      });
+      return;
+    }
 
     if (!groupName) {
-      setError("Vous devez entrer un nom pour le groupe");
+      setMessage({
+        text: "Vous devez entrer un nom pour le groupe",
+        type: "danger",
+      });
       return;
     }
 
     if (!groupCharacters.length) {
-      setError("Erreur, le groupe est vide !");
+      setMessage({ text: "Erreur, le groupe est vide !", type: "danger" });
       return;
     }
 
@@ -93,22 +116,23 @@ export default function GroupEditor() {
           history.push(`/groups/edit-group/${newGroupId}`);
         }
       }
-      setSuccess("Groupe enregistré");
+      setMessage({ text: "Groupe enregistré", type: "success" });
     } catch (error) {
       console.error(error);
-      setError("Une erreur est survenue lors de la sauvegarde du groupe.");
+      setMessage({
+        text: "Une erreur est survenue lors de la sauvegarde du groupe.",
+        type: "danger",
+      });
     }
   };
 
   const handleCharacterRemove = (e) => {
-    setError("");
-    setSuccess("");
     const clickedId = Number(e.target.id);
     const clickedIndex = groupCharacters.findIndex(
       (character) => character.id === clickedId
     );
     if (clickedIndex === -1) {
-      setError("Unerreur est survenue");
+      setMessage({ text: "Une erreur est survenue", type: "danger" });
     } else {
       setGroupCharacters((groupCharacters) => {
         const tempGroup = [...groupCharacters];
@@ -120,8 +144,7 @@ export default function GroupEditor() {
 
   return (
     <>
-      {error && <Alert variant="danger">{error}</Alert>}
-      {success && <Alert variant="success">{success}</Alert>}
+      {message && <Alert variant={message.type}>{message.text}</Alert>}
       <GroupEditorCard
         groupName={groupName}
         groupCharacters={groupCharacters}
