@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Alert, Button, Card } from "react-bootstrap";
+import { Button, Card } from "react-bootstrap";
 import { useHistory } from "react-router-dom";
 import GroupDisplay from "./GroupDisplay";
 import { fireGroupsFunctions } from "../../utils/firebase";
@@ -13,7 +13,6 @@ export default function GroupsCard() {
   const [groups, setGroups] = useState([]);
   const [selectedGroup, setSelectedGroup] = useState(undefined);
   const [groupsExists, setGroupsExists] = useState(false);
-  const [alert, setAlert] = useState("");
   const history = useHistory();
 
   const groupsLoad = async () => {
@@ -51,7 +50,6 @@ export default function GroupsCard() {
 
   return (
     <>
-      {alert && <Alert variant="warning">{alert}</Alert>}
       <Card
         bg="dark"
         border="warning"
