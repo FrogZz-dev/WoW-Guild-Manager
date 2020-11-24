@@ -79,6 +79,12 @@ export default function CharacterAltsEditor({ lastCharacter = {} }) {
     }
   };
 
+  // permet de retirer les informations inutiles des personnages enregistrés
+  const characterCleaner = (character) => {
+    const { id, name, className } = character;
+    return { id, name, className };
+  };
+
   const handleSave = async () => {
     if (!isMember()) {
       setAlertInfo({
@@ -96,23 +102,23 @@ export default function CharacterAltsEditor({ lastCharacter = {} }) {
       });
       return;
     }
-
+    const altsToSave = altCharacters.map(characterCleaner);
     try {
       if (documentId) {
-        if (altCharacters.length > 1) {
+        if (altsToSave.length > 1) {
           await fireAltsFunctions.updateMemberAlts(
             documentId,
             mainRef.current.value,
-            altCharacters
+            altsToSave
           );
         } else {
           await fireAltsFunctions.deleteMemberAlts(documentId);
         }
       } else {
-        if (altCharacters.length > 1) {
+        if (altsToSave.length > 1) {
           await fireAltsFunctions.addMemberAlts(
             mainRef.current.value,
-            altCharacters
+            altsToSave
           );
         }
       }
