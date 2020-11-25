@@ -15,126 +15,13 @@ export const useRoster = () => {
 
 export default function RosterProvider({ children }) {
   // l'ensemble des personnages obtenu par l'api
-  const [roster, setRoster] = useState([]);
-
-  // personnages affichés, filtres inclus
-  const [displayedCharacters, setDisplayedCharacters] = useState([]);
-
-  // personnages affichables, ceux qui n'ont pas été retiré par un click
-  const [displayableCharacters, setDisplayableCharacters] = useState([]);
+  const [roster, setRoster] = useState([]); // array d'objets {id (depuis l'API),name,ranklevel,iLvl,className,spec}
+  const [rosterAlts, setRosterAlts] = useState([]); // array d'objets {id (du doc sur firestore), altsData: [{id (identique aux id Roster), name, className}]}
 
   // classes jouables
   const [classes, setClasses] = useState([]);
 
-  // gestion du tri
-  const [sorting, setSorting] = useState("name");
-  const [isDescending, setIsDescending] = useState(true);
-  const [filters, setFilters] = useState({
-    nameFilter: "",
-    selectedClass: "",
-    selectedRank: "",
-  });
-
   const [isLoadingRoster, setIsLoadingRoster] = useState(true);
-
-  // active le filtre sur la page de gesion des alts
-  const [isAltFiltered, setIsAltFiltered] = useState(false);
-
-  // infos contenues dans chaque personnage
-  const availableInfo = [
-    { key: "name", displayName: "Nom", type: "string" },
-    { key: "className", displayName: "Classe", type: "string" },
-    { key: "spec", displayName: "Spécialisation", type: "string" },
-    { key: "level", displayName: "Niveau", type: "number" },
-    { key: "iLvl", displayName: "iLvl", type: "number" },
-    { key: "rank", displayName: "Rang", type: "string" },
-  ];
-
-  /**
-   *  Gestion des filtres et du tri
-   */
-
-  // application des filtres
-  const filterCharacters = () => {
-    let tempDisplay = [...displayableCharacters];
-    const { nameFilter, selectedClass, selectedRank } = filters;
-
-    if (selectedClass) {
-      tempDisplay = tempDisplay.filter(
-        (character) => character.className === selectedClass
-      );
-    }
-
-    if (selectedRank) {
-      tempDisplay = tempDisplay.filter(
-        (character) => character.rank === selectedRank
-      );
-    }
-
-    if (nameFilter) {
-      const regex = new RegExp(nameFilter, "i");
-
-      tempDisplay = tempDisplay.filter(
-        (character) => character.name.search(regex) > -1
-      );
-    }
-    setDisplayedCharacters(tempDisplay);
-  };
-
-  useEffect(() => {
-    filterCharacters();
-  }, [filters, displayableCharacters]);
-
-  // mise à jour des states de tri
-  const sortingChange = (sortingCategory) => {
-    if (sortingCategory === sorting) {
-      setIsDescending((isDescending) => !isDescending);
-    } else {
-      setSorting(sortingCategory);
-      setIsDescending(true);
-    }
-  };
-
-  // retourne le type des données à trier
-  const getSortType = () => {
-    return availableInfo.find((info) => info.key === sorting).type;
-  };
-
-  // fonction appliqué par la méthode "sort"
-  const sortCallback = (item1, item2) => {
-    // methode de tri des nombres
-    if (getSortType() === "number") {
-      if (isDescending) {
-        return item2[sorting] - item1[sorting];
-      }
-      return item1[sorting] - item2[sorting];
-    }
-
-    // méthode de tri des strings
-    if (isDescending) {
-      return item1[sorting].localeCompare(item2[sorting]);
-    }
-    return item2[sorting].localeCompare(item1[sorting]);
-  };
-
-  const sortCharacters = (charactersToSort) => {
-    if (charactersToSort.length > 0) {
-      const tempCharacters = [...charactersToSort];
-      tempCharacters.sort(sortCallback);
-      return tempCharacters;
-    }
-
-    return [];
-  };
-
-  // application du changement d'ordre
-  useEffect(() => {
-    getSortType();
-
-    setDisplayableCharacters((displayableCharacters) =>
-      sortCharacters(displayableCharacters)
-    );
-  }, [sorting, isDescending]);
 
   /**
    * Initialisation des données du roster
@@ -142,7 +29,6 @@ export default function RosterProvider({ children }) {
 
   // chargement des infos complètes du roster
   async function loadRoster() {
-    setIsLoadingRoster(true);
     // récupération de la liste des membres
     const rawRosterData = await wowData.getGuildRoster(
       region,
@@ -156,14 +42,11 @@ export default function RosterProvider({ children }) {
       rawRosterData.map(async (rawCharacter) => {
         try {
           // récupération des infos d'un personnage
-          const [memberData, { altsData }] = await Promise.all([
-            wowData.getCharacterInfo(
-              region,
-              realm,
-              rawCharacter.character.name
-            ),
-            fireAltsFunctions.getMemberAltsById(rawCharacter.character.id),
-          ]);
+          const memberData = await wowData.getCharacterInfo(
+            region,
+            realm,
+            rawCharacter.character.name
+          );
 
           if (memberData === undefined) {
             throw new Error(
@@ -180,7 +63,6 @@ export default function RosterProvider({ children }) {
             iLvl: memberData.average_item_level,
             className: memberData.character_class.name,
             spec: memberData.active_spec.name,
-            alts: altsData ? altsData.characters : [],
           };
 
           // ajout du personnage à la liste
@@ -190,9 +72,14 @@ export default function RosterProvider({ children }) {
         }
       })
     ).then(() => {
-      setRoster(sortCharacters(newRoster));
-      setIsLoadingRoster(false);
+      setRoster(newRoster);
     });
+  }
+
+  //chargement des alts et stockage
+  async function loadAlts() {
+    const membersAltsData = await fireAltsFunctions.getAllMembers();
+    setRosterAlts(membersAltsData);
   }
 
   //chargement des classes
@@ -204,38 +91,22 @@ export default function RosterProvider({ children }) {
     );
   }
 
-  // copie les membres du roster
-  const updateDisplayable = () => {
-    // filtre les personnages qui ont déjà des alts liés
-    if (isAltFiltered) {
-      setDisplayableCharacters(
-        roster.filter((character) => character.alts.length === 0)
-      );
-    } else {
-      setDisplayableCharacters(roster);
-    }
-  };
-
   async function initData() {
+    setIsLoadingRoster(true);
     try {
       // création du token d'accès
       await wowData.setToken();
       await Promise.all([loadRoster(), loadClasses()]);
+      await loadAlts();
     } catch (error) {
       console.error(error);
     }
+    setIsLoadingRoster(false);
   }
 
   useEffect(() => {
     initData();
   }, []);
-
-  // initialisation des states d'affichage
-  useEffect(() => {
-    if (!isLoadingRoster) {
-      updateDisplayable();
-    }
-  }, [isLoadingRoster, isAltFiltered]);
 
   /**
    * fonctions utilitaires
@@ -244,28 +115,35 @@ export default function RosterProvider({ children }) {
     return roster.find((character) => character.id === id);
   };
 
+  const getAltsByCharacterId = (characterId) => {
+    rosterAlts.find((memberAlts) =>
+      memberAlts.altsData.characters.some(
+        (character) => character.id === characterId
+      )
+    );
+  };
+
+  const sortRoster = (sortCallback) => {
+    if (roster.length > 0) {
+      const tempRoster = [...roster];
+      tempRoster.sort(sortCallback);
+      setRoster(tempRoster);
+    } else {
+      setRoster([]);
+    }
+  };
+
   /**
    * valeurs partagées du context
    */
-  const displayInfo = {
-    displayedCount: displayedCharacters.length,
-    displayableCount: displayableCharacters.length,
-    isAltFiltered,
-  };
-
   const values = {
-    displayedCharacters, // les personnages à afficher (array)
-    loadRoster, // l'initialisation du roster (fonction sans paramètre)
+    roster,
+    setRoster,
     isLoadingRoster, // l'état de chargement (boolean)
-    setFilters, // la mise à jour des filtres de tri (fonction, paramètre : {nameFilter:"", selectedClass: "",selectedRank: ""}
     classes, // liste des classes jouables (array)
-    availableInfo, // liste des infos à afficher (array)
-    sortingChange, // mise à jour du tri (fonction sans paramètre)
-    sorting, // le caractère de tri (string), utile pour l'affichage
-    isDescending, // l'ordre de tri (boolean), utile pour l'affichage
     getCharacterById, // paramètre: id (number) => character (object)
-    setIsAltFiltered, // toggle le filtre des personnages ayant un alt
-    displayInfo,
+    getAltsByCharacterId,
+    sortRoster,
   };
 
   return (

@@ -6,9 +6,9 @@ export default function InfoDisplay() {
 
   return (
     <div id="display-info" className="w-100 text-right text-light">
-      Affichage de {displayInfo.displayedCount} sur{" "}
-      {displayInfo.displayableCount} personnages
-      {displayInfo.isAltFiltered ? " (sans alt)" : ""}
+      Affichage de {displayInfo?.displayedCount} sur{" "}
+      {displayInfo?.displayableCount} personnages
+      {displayInfo?.isAltFiltered ? " (sans alt)" : ""}
     </div>
   );
 }

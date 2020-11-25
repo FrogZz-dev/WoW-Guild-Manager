@@ -1,12 +1,14 @@
 import React from "react";
 import { useRoster } from "@contexts/RosterContext";
+import { useFilters } from "@contexts/FiltersContext";
 import CharacterRow from "./CharacterRow";
 
 export default function CharactersBody({ onCharacterClick }) {
-  const { displayedCharacters } = useRoster();
+  const { roster } = useRoster();
+  const { applyFiltersCallback } = useFilters();
   return (
     <tbody>
-      {displayedCharacters.map((character) => (
+      {roster.filter(applyFiltersCallback).map((character) => (
         <CharacterRow
           key={character.id}
           characterData={character}

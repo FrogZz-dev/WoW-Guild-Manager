@@ -98,21 +98,15 @@ export const fireAltsFunctions = {
     membersRef.add({ main: Number(mainCharacterId), characters: characters });
   },
 
-  // récupération des information d'un membre selon l'id d'un de ses personnages
-  async getMemberAltsById(characterId) {
-    const docs = await membersRef.get();
+  async getAllMembers() {
+    const members = await membersRef.get();
 
-    let member = {};
-    docs.forEach((doc) => {
-      const foundMember = doc
-        .data()
-        .characters.find((character) => character.id === characterId);
-      if (foundMember) {
-        member = { docId: doc.id, altsData: doc.data() };
-      }
-    });
+    const membersData = [];
+    members.forEach((member) =>
+      membersData.push({ id: member.id, altsData: member.data() })
+    );
 
-    return member;
+    return membersData;
   },
 
   // mise à jours dés infos d'un membre existant

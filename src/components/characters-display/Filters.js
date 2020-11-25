@@ -1,39 +1,30 @@
-import React, { useRef } from "react";
+import React from "react";
 import { Col, Form } from "react-bootstrap";
 import { useRoster } from "@contexts/RosterContext";
+import { useFilters } from "@contexts/FiltersContext";
 import wowData from "@utils/wowData";
 
 export default function Filters() {
-  const { setFilters, classes } = useRoster();
-
-  const searchInput = useRef();
-  const classFilter = useRef();
-  const rankFilter = useRef();
-
-  const validateInput = (input) => {
-    const specialChar = new RegExp(/[/*|+'"`\\@()[\]{}$@&.:;<>]/, "g");
-    return input.replace(specialChar, "");
-  };
-  const handleFilterChange = () => {
-    searchInput.current.value = validateInput(searchInput.current.value);
-    const nameFilter = searchInput.current.value;
-    const selectedClass = classFilter.current.value;
-    const selectedRank = rankFilter.current.value;
-
-    setFilters({ nameFilter, selectedClass, selectedRank });
-  };
+  const { classes } = useRoster();
+  const {
+    handleFilterChange,
+    nameFilter,
+    classFilter,
+    rankFilter,
+    maxLevelOnly,
+  } = useFilters();
 
   return (
     <Form>
       <Form.Row>
-        <Form.Group as={Col} controlId="searchFilter">
+        <Form.Group as={Col} controlId="nameFilter">
           <Form.Label className="text-light">Recherche :</Form.Label>
           <Form.Control
             type="search"
             size="sm"
             className="bg-dark text-light"
+            value={nameFilter}
             onChange={handleFilterChange}
-            ref={searchInput}
             placeholder="Recherche"
             autoComplete="off"
           />
@@ -44,7 +35,7 @@ export default function Filters() {
             as="select"
             size="sm"
             onChange={handleFilterChange}
-            ref={classFilter}
+            value={classFilter}
             className="bg-dark text-light"
           >
             <option value="">Toutes les classes</option>
@@ -61,7 +52,7 @@ export default function Filters() {
             as="select"
             size="sm"
             onChange={handleFilterChange}
-            ref={rankFilter}
+            value={rankFilter}
             className="bg-dark text-light"
           >
             <option value="">Tous les rangs</option>
@@ -73,6 +64,15 @@ export default function Filters() {
           </Form.Control>
         </Form.Group>
       </Form.Row>
+      <Form.Group as={Col} controlId="maxLevelFilter">
+        <Form.Check
+          type="checkbox"
+          onChange={handleFilterChange}
+          value={maxLevelOnly}
+          className="bg-dark text-light"
+          label="Niveau max seulement"
+        />
+      </Form.Group>
     </Form>
   );
 }

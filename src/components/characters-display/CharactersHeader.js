@@ -1,15 +1,15 @@
 import React from "react";
 import HeaderCell from "./HeaderCell";
-import { useRoster } from "@contexts/RosterContext";
+import { useFilters } from "@contexts/FiltersContext";
 
 export default function CharactersHeader() {
-  const { availableInfo } = useRoster();
+  const { availableInfo } = useFilters();
 
   return (
     <thead>
       <tr>
         {availableInfo.map((info) => (
-          <HeaderCell key={info.key} info={info} />
+          <HeaderCell key={info.infoKey} info={info} />
         ))}
       </tr>
     </thead>

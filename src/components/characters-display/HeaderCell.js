@@ -1,21 +1,18 @@
 import React from "react";
-import { useRoster } from "@contexts/RosterContext";
+import { useFilters } from "@contexts/FiltersContext";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSortDown } from "@fortawesome/free-solid-svg-icons";
 
 export default function HeaderCell({ info }) {
-  const { key, displayName } = info;
-  const { sortingChange, sorting, isDescending } = useRoster();
-
-  const handleSortChange = () => {
-    sortingChange(key);
-  };
+  const { infoKey, displayName } = info;
+  const { handleSortChange, orderBy, isDescending } = useFilters();
 
   return (
-    <th onClick={handleSortChange}>
+    <th id={infoKey} onClick={handleSortChange}>
       {displayName}{" "}
-      {sorting === key ? (
+      {orderBy === infoKey ? (
         <FontAwesomeIcon
+          onClick={() => {}}
           icon={faSortDown}
           flip={isDescending ? "horizontal" : "vertical"}
         />
