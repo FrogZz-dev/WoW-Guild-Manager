@@ -4,7 +4,7 @@ import { Redirect, Route, useRouteMatch } from "react-router-dom";
 import CharacterCard from "../members/alts-manager/CharacterCard";
 import CharacterAltsEditor from "../members/alts-manager/CharacterAltsEditor";
 
-export default function ManagementRoutes({ lastClicked, onCharacterClick }) {
+export default function MembersRoutes({ lastClicked, onCharacterClick }) {
   const { path } = useRouteMatch();
   return (
     <Switch className="pl-0 w-100 d-flex justify-content-center">

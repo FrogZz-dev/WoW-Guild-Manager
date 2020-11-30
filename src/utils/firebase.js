@@ -103,7 +103,7 @@ export const fireAltsFunctions = {
 
     const membersData = [];
     members.forEach((member) =>
-      membersData.push({ id: member.id, altsData: member.data() })
+      membersData.push({ docId: member.id, altsData: member.data() })
     );
 
     return membersData;

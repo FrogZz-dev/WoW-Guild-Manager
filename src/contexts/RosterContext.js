@@ -76,7 +76,7 @@ export default function RosterProvider({ children }) {
     });
   }
 
-  //chargement des alts et stockage
+  //chargement des alts
   async function loadAlts() {
     const membersAltsData = await fireAltsFunctions.getAllMembers();
     setRosterAlts(membersAltsData);
@@ -116,10 +116,10 @@ export default function RosterProvider({ children }) {
   };
 
   const getAltsByCharacterId = (characterId) => {
-    rosterAlts.find((memberAlts) =>
-      memberAlts.altsData.characters.some(
-        (character) => character.id === characterId
-      )
+    return rosterAlts.find((memberAlts) =>
+      memberAlts.altsData.characters.some((character) => {
+        return character.id === characterId;
+      })
     );
   };
 
@@ -138,7 +138,8 @@ export default function RosterProvider({ children }) {
    */
   const values = {
     roster,
-    setRoster,
+    rosterAlts,
+    loadAlts,
     isLoadingRoster, // l'état de chargement (boolean)
     classes, // liste des classes jouables (array)
     getCharacterById, // paramètre: id (number) => character (object)

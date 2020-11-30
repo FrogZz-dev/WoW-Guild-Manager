@@ -11,7 +11,7 @@ export default function MainSelection({ mainRef, altCharacters }) {
         ref={mainRef}
         className="bg-dark text-light"
       >
-        {altCharacters.map((character) => (
+        {altCharacters?.map((character) => (
           <option key={character.id} value={character.id}>
             {character.name}
           </option>

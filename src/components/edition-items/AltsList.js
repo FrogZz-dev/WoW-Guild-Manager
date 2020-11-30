@@ -4,7 +4,7 @@ import { validateName } from "@utils/utilities";
 export default function AltsList({ altCharacters, onRemove }) {
   return (
     <ul>
-      {altCharacters.map((character) => (
+      {altCharacters?.map((character) => (
         <li
           key={character.id}
           className={`character ${validateName(character.className)}`}

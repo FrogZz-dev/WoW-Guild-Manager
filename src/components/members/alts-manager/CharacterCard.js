@@ -1,21 +1,38 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Button, Card } from "react-bootstrap";
 import { useHistory } from "react-router-dom";
 import Character from "../../characters-display/Character";
 import { useAuth } from "@contexts/AuthContext";
+import { useRoster } from "@contexts/RosterContext";
 import { validateName } from "@utils/utilities";
 
 export default function CharacterCard({
   lastCharacter = {},
   onCharacterClick,
 }) {
-  const { id, name, className, spec, level, iLvl, rank, alts } = lastCharacter;
+  const { getAltsByCharacterId } = useRoster();
+
+  const { id, name, className, spec, level, iLvl, rank } = lastCharacter;
   const { isVerifiedOnline } = useAuth();
+
+  const [alts, setAlts] = useState([]);
+  const [main, setMain] = useState();
+
   const history = useHistory();
 
   const handleModifyAlts = () => {
     history.push(`/members/edit-character/${id}`);
   };
+
+  useEffect(() => {
+    const rawAlts = getAltsByCharacterId(id);
+    if (rawAlts) {
+      setAlts(rawAlts.altsData.characters);
+      setMain(rawAlts.altsData.main);
+    } else {
+      setAlts([]);
+    }
+  }, [id, getAltsByCharacterId]);
 
   return (
     <>
@@ -45,15 +62,19 @@ export default function CharacterCard({
                 <br />
                 {iLvl} iLvl
                 <br />
-                {alts.length ? "Personnages liés:" : "Aucun autre personnage"}
+                {alts && alts.length
+                  ? "Personnages liés:"
+                  : "Aucun autre personnage"}
                 <br />
-                {alts.map((character) => (
-                  <Character
-                    key={character.id}
-                    characterInfo={character}
-                    onCharacterClick={onCharacterClick}
-                  />
-                ))}
+                {alts &&
+                  alts.map((character) => (
+                    <Character
+                      key={character.id}
+                      characterInfo={character}
+                      onCharacterClick={onCharacterClick}
+                      isMain={main === character.id}
+                    />
+                  ))}
               </Card.Text>
             </>
           )}

@@ -10,14 +10,14 @@ import AltsList from "../../edition-items/AltsList";
 import MainSelection from "../../edition-items/MainSelection";
 import InfoMessage from "../../edition-items/InfoMessage";
 
-export default function CharacterAltsEditor({ lastCharacter = {} }) {
-  const [altCharacters, setAltCharacters] = useState([]);
+export default function CharacterAltsEditor({ lastCharacter }) {
+  const [altCharacters, setAltCharacters] = useState();
   const [documentId, setDocumentId] = useState();
   const [alertInfo, setAlertInfo] = useState({ message: "", type: "" });
   const {
-    loadRoster,
-    setIsAltFiltered,
+    loadAlts,
     getCharacterById,
+    getAltsByCharacterId,
     isLoadingRoster,
   } = useRoster();
 
@@ -27,29 +27,28 @@ export default function CharacterAltsEditor({ lastCharacter = {} }) {
 
   // chargement de la liste des rerolls en fonction du personnage choisi
   const loadMember = async () => {
-    const { docId, altsData } = await fireAltsFunctions.getMemberAltsById(
-      Number(characterId)
-    );
-    if (altsData !== undefined) {
+    const retrievedAlts = getAltsByCharacterId(Number(characterId));
+    if (retrievedAlts) {
+      const { docId, altsData } = retrievedAlts;
       setDocumentId(docId);
       setAltCharacters(altsData.characters);
       mainRef.current.value = altsData.main;
-    } else {
+    } else if (lastCharacter === undefined) {
       setAltCharacters([getCharacterById(Number(characterId))]);
+    } else {
+      setAltCharacters([]);
     }
   };
 
   useEffect(() => {
     if (!isLoadingRoster) {
       loadMember();
-      setIsAltFiltered(true);
-      return () => setIsAltFiltered(false);
     }
   }, [isLoadingRoster]);
 
   // ajout du dernier personnage clické à la liste des rerolls
   useEffect(() => {
-    if (Object.keys(lastCharacter).length) {
+    if (altCharacters && lastCharacter) {
       const characterFound = altCharacters.find(
         (character) => character.id === lastCharacter.id
       );
@@ -123,10 +122,10 @@ export default function CharacterAltsEditor({ lastCharacter = {} }) {
         }
       }
       setAlertInfo({ message: "Rerolls enregistrés !", type: "success" });
-      loadRoster();
+      loadAlts();
     } catch (error) {
       setAlertInfo({
-        message: "Vous devez être connecté !",
+        message: "Une erreur est survenue !",
         type: "warning",
       });
       console.log(error);

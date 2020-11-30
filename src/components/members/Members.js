@@ -5,13 +5,17 @@ import MembersRoutes from "../routes/MembersRoutes";
 export default function Members() {
   const [lastClicked, setLastClicked] = useState();
 
+  const handleCharacterSelection = (character) => {
+    setLastClicked(character);
+  };
+
   return (
     <>
       <MembersRoutes
         lastClicked={lastClicked}
-        onCharacterClick={setLastClicked}
+        onCharacterClick={handleCharacterSelection}
       />
-      <CharactersDisplay onCharacterClick={setLastClicked} />
+      <CharactersDisplay onCharacterClick={handleCharacterSelection} />
     </>
   );
 }

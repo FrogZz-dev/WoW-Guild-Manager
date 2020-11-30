@@ -3,6 +3,10 @@
   cursor: pointer;
 }
 
+.main-character {
+  text-decoration: underline;
+}
+
 .chevalier-de-la-mort {
   color: #c41f3b;
 }
