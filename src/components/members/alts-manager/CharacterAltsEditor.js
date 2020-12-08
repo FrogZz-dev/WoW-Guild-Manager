@@ -4,6 +4,7 @@ import { Card } from "react-bootstrap";
 import { useParams } from "react-router-dom";
 import { fireAltsFunctions } from "@utils/firebase";
 import { useRoster } from "../../../contexts/RosterContext";
+import { useFilters } from "../../../contexts/FiltersContext";
 import { useAuth } from "../../../contexts/AuthContext";
 import EditButtons from "../../edition-items/EditButtons";
 import AltsList from "../../edition-items/AltsList";
@@ -20,6 +21,7 @@ export default function CharacterAltsEditor({ lastCharacter }) {
     getAltsByCharacterId,
     isLoadingRoster,
   } = useRoster();
+  const { setAltsFilter } = useFilters();
 
   const { isMember, isVerifiedOnline } = useAuth();
   const mainRef = useRef();
@@ -43,7 +45,10 @@ export default function CharacterAltsEditor({ lastCharacter }) {
   useEffect(() => {
     if (!isLoadingRoster) {
       loadMember();
+      setAltsFilter([]);
     }
+
+    return () => setAltsFilter(undefined);
   }, [isLoadingRoster]);
 
   // ajout du dernier personnage clické à la liste des rerolls
@@ -57,10 +62,6 @@ export default function CharacterAltsEditor({ lastCharacter }) {
       }
     }
   }, [lastCharacter]);
-
-  useEffect(() => {
-    return () => {};
-  }, [altCharacters]);
 
   // retrait d'un personnage clické dans la liste des alts
   const handleCharacterRemove = (e) => {

@@ -16,8 +16,14 @@ export default function FiltersProvider({ children }) {
   const [classFilter, setClassFilter] = useState("");
   const [rankFilter, setRankFilter] = useState("");
   const [maxLevelOnly, setMaxLevelOnly] = useState(false);
+  const [altsFilter, setAltsFilter] = useState(undefined);
 
-  const { sortRoster, isLoadingRoster } = useRoster();
+  const {
+    sortRoster,
+    isLoadingRoster,
+    rosterAlts,
+    getAltsByCharacterId,
+  } = useRoster();
 
   // infos contenues dans chaque personnage et utiles à l'affichage et au tri
   const availableInfo = [
@@ -78,11 +84,16 @@ export default function FiltersProvider({ children }) {
       return false;
     }
 
+    if (altsFilter) {
+      if (getAltsByCharacterId(character.id)) {
+        return false;
+      }
+    }
+
     return true;
   };
 
   /**
-   *
    *  Fonctions de tri
    */
 
@@ -141,6 +152,7 @@ export default function FiltersProvider({ children }) {
     classFilter,
     rankFilter,
     maxLevelOnly,
+    setAltsFilter,
     handleFilterChange,
     applyFiltersCallback,
     availableInfo,
@@ -148,6 +160,7 @@ export default function FiltersProvider({ children }) {
     isDescending,
     handleSortChange,
   };
+
   return (
     <FiltersContext.Provider value={values}>{children}</FiltersContext.Provider>
   );

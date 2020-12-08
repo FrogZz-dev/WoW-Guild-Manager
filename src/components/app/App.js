@@ -4,6 +4,7 @@ import Header from "./Header";
 import MainRoutes from "@components/routes/MainRoutes";
 import { BrowserRouter as Router } from "react-router-dom";
 import RosterProvider from "../../contexts/RosterContext";
+import FiltersProvider from "../../contexts/FiltersContext";
 
 function App() {
   return (
@@ -12,9 +13,11 @@ function App() {
         <div id="app" className="bg-dark min-vh-100">
           <Header />
           <RosterProvider>
-            <Container fluid="md" style={{ minHeight: "85vh" }}>
-              <MainRoutes />
-            </Container>
+            <FiltersProvider>
+              <Container fluid="md" style={{ minHeight: "85vh" }}>
+                <MainRoutes />
+              </Container>
+            </FiltersProvider>
           </RosterProvider>
         </div>
       </AuthProvider>
